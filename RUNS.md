@@ -5,8 +5,6 @@ One entry per eval or benchmark run, newest first. Raw results are in `evals/res
 | Date | Run | Release | Result | Cost |
 |---|---|---|---|---|
 | 2026-10-12 | τ²-bench airline, all 50 tasks, 1 trial | `v1-efe062d5` | pass^1 **78%** (39/50), gate passed | $16.47 |
-| 2026-10-12 | τ²-bench airline, tasks 0–2 (smoke test) | `v1-efe062d5` | 3/3 | $0.88 |
-| 2026-10-12 | Built-in eval (`evals/dataset.jsonl`) | `v1-efe062d5` | 4/4 checks, mean judge 4.25, gate passed | — |
 
 ## 2026-10-12: τ²-bench airline, full set
 
@@ -62,18 +60,3 @@ The cost cap fired on 6 tasks. Two of them (10 and 21) still passed because the 
 1. Raise `max_cost_usd` to 1.0 and rerun tasks 14, 23, 33 and 35 (about $3).
 2. Read the traces for tasks 7, 25, 29, 31, 32, 39 and 44, group them by failure type, and fix the prompt.
 3. Run `--trials 4` for a more reliable pass^1 and for pass^k.
-
-## 2026-10-12: τ²-bench airline, tasks 0–2
-
-A smoke test before the full run. All 3 tasks passed for $0.88. Tasks 0–2 are policy refusals, so they say little about the full set. The result file was overwritten by the full run.
-
-## 2026-10-12: built-in eval
-
-| Case | Checks | Judge | Stop |
-|---|---|---|---|
-| `followup-all` | pass | 5 | done |
-| `ambiguous-refund` | pass | 4 | asked_user |
-| `single-refund` | pass | 3 | done |
-| `no-tools-needed` | pass | 5 | done |
-
-All 4 cases passed their checks, with a mean judge score of 4.25 against the 3.5 gate. `single-refund` scored lowest; the judge's reason is on its Langfuse trace. The result file was deleted before results were committed, so these numbers come from the terminal output.
