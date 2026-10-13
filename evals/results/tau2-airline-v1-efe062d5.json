@@ -1,0 +1,459 @@
+{
+  "domain": "airline",
+  "release_tag": "v1-efe062d5",
+  "gate_passed": true,
+  "pass^1": 0.78,
+  "total_cost_usd": 16.4696,
+  "attempts": [
+    {
+      "task_id": "0",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "dffd195fecc7ce279e25a7130ec74ca0",
+      "cost_usd": 0.142372,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "1",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "7889d2672b57dec25d2c2d8144a610c6",
+      "cost_usd": 0.20898,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "2",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "6112a70639973c2c3a61c1940d96fc05",
+      "cost_usd": 0.412428,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "3",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "d74427293d2d2201594d3eb2e12e2ace",
+      "cost_usd": 0.186576,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "4",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "68b6efe644ef1ba716562d771303d3c8",
+      "cost_usd": 0.291564,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "5",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "4128a4b4b41446fd8556e560c3696f6d",
+      "cost_usd": 0.280396,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "6",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "4be4f0dcbc3fd040fc35e6f19f40bb47",
+      "cost_usd": 0.215656,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "7",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "c12f54caf468544fb62c875c01ed7134",
+      "cost_usd": 0.4305,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "8",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "1e701ba3395ac6a113061e63ad3a9541",
+      "cost_usd": 0.337584,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "9",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "a7df514305504d9d9643e90b3b56f846",
+      "cost_usd": 0.193428,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "10",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "74ed14e515063a1e197d90ba187c975e",
+      "cost_usd": 0.500976,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "11",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "10ab7ab1ba37eadb7f223de99ba3254d",
+      "cost_usd": 0.333736,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "12",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "a813bca093e6ce605104dc611b77f713",
+      "cost_usd": 0.359708,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "13",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "75a4487b492b0d09ea2943c3a9ba1164",
+      "cost_usd": 0.1805,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "14",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "8544286c882148bfe60025dc1b811ef9",
+      "cost_usd": 0.51118,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "15",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "f209961925f7ec44b90dedfbc3b9e797",
+      "cost_usd": 0.31732,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "16",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "54605b2dae31a5144ecebff042406e93",
+      "cost_usd": 0.27378,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "17",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "62703fe009f5c8488f396e5aa918f43a",
+      "cost_usd": 0.379444,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "18",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "6872e65d5bf80c5a231e4f38c0ac6c94",
+      "cost_usd": 0.525028,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "19",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "3fb1a99b7b65bfad6acbdb24615d561a",
+      "cost_usd": 0.261772,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "20",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "f2ae87713004b47a92c6c069253a8949",
+      "cost_usd": 0.561304,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "21",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "ca5718ed2a0b70f54174510bcd937bfb",
+      "cost_usd": 0.543692,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "22",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "16e6461a2ee1347e0ccb6eaf9791a9bb",
+      "cost_usd": 0.412808,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "23",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "799d2e5305e863a3ede2f6b09964469e",
+      "cost_usd": 0.53114,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "24",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "57c81b0bd4caafbf8abd444967428002",
+      "cost_usd": 0.560876,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "25",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "af24c63b7c760b86c3615eb1f92de1f8",
+      "cost_usd": 0.19448,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "26",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "6db7a6d0bc09adc9f6f11d04ce37f597",
+      "cost_usd": 0.260688,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "27",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "30368f1a131883015d65b5c52ffcdd80",
+      "cost_usd": 0.320376,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "28",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "67d2e03bbd367b8abc9b70b2ce992ade",
+      "cost_usd": 0.279364,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "29",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "7bab82983e3156d0441b53756c42e691",
+      "cost_usd": 0.259456,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "30",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "0e5ebcffcec627b6d6b34ac4f7f197b8",
+      "cost_usd": 0.275236,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "31",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "9e2a49e48d31a7c111133b102bee4e3b",
+      "cost_usd": 0.43,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "32",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "a41af0f5bd2edd87e53f6ad11715238f",
+      "cost_usd": 0.357084,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "33",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "bd3fb6a3fe0f13b5b168a4fdc412c60b",
+      "cost_usd": 0.514172,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "34",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "55a2d7f98d7073b647d8f123154c4de3",
+      "cost_usd": 0.341092,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "35",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "97b9ac1ddef3ca48aaa7a1e12763945d",
+      "cost_usd": 0.501088,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "36",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "8b444b32d2a5a608827b7563c3577f7e",
+      "cost_usd": 0.14638,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "37",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "47a19b16967e5c97ebe21e7a8ad1c1de",
+      "cost_usd": 0.345292,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "38",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "60bce8071ca689a9387b773c258d8215",
+      "cost_usd": 0.285432,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "39",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "9c1c790b6b87d08c33d87ff8c125a456",
+      "cost_usd": 0.33088,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "40",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "a7e71bf612b8adcef724d4c3dd9b7623",
+      "cost_usd": 0.172568,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "41",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "ee6c4779ff9e45675a529deb77df9998",
+      "cost_usd": 0.222748,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "42",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "2c20c7605c5fbd6aea09277f9b7da8cd",
+      "cost_usd": 0.293604,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "43",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "fe41ac550ef643a2a590decd37a9ae8b",
+      "cost_usd": 0.24432,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "44",
+      "trial": 0,
+      "reward": 0.0,
+      "trace_id": "9f91e6cb0e88bdcc34f74063fa88bf89",
+      "cost_usd": 0.544008,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": false
+    },
+    {
+      "task_id": "45",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "29212806becb151ffd520bf92c557b8d",
+      "cost_usd": 0.309932,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "46",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "d71a003aaf10f663ef5281b09e54b78f",
+      "cost_usd": 0.10522,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "47",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "d762053c7bec04808510f1bc077794af",
+      "cost_usd": 0.299664,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "48",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "4e083c270994d5a9451a1287b086cc39",
+      "cost_usd": 0.188088,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    },
+    {
+      "task_id": "49",
+      "trial": 0,
+      "reward": 1.0,
+      "trace_id": "50406711487b48387b061a51e47dbea2",
+      "cost_usd": 0.295724,
+      "termination": "TerminationReason.USER_STOP",
+      "db_match": true
+    }
+  ]
+}
