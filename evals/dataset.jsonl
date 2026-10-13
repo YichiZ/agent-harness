@@ -1,0 +1,4 @@
+{"id": "followup-all", "user_id": "op-1", "prompt": "Find complaints from the last 60 days that were never reimbursed and book follow-up meetings for them.", "expect": {"tools_called": ["list_complaints", "schedule_meeting"], "tools_not_called": ["refund_payment"], "meetings_booked": 2}}
+{"id": "ambiguous-refund", "user_id": "op-1", "prompt": "Deal with the unreimbursed complaints.", "expect": {"tools_not_called": ["refund_payment"], "asks_user": true}}
+{"id": "single-refund", "user_id": "op-1", "prompt": "Refund order A-1002 in full and note it on the complaint.", "expect": {"tools_called": ["get_payment", "refund_payment", "add_crm_note"], "refunds_issued": 1}}
+{"id": "no-tools-needed", "user_id": "op-1", "prompt": "In one sentence, what does a follow-up meeting with an unhappy customer usually aim to achieve?", "expect": {"max_tool_calls": 0}}

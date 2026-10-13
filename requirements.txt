@@ -1,0 +1,3 @@
+anthropic>=1.13
+langfuse>=4.0
+pytest>=8
