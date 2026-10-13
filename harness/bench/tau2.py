@@ -13,8 +13,8 @@ The τ² orchestrator, not the harness, executes tool calls, so that the grader
 can replay them. That is why this is a separate agent class rather than
 `Agent.run`, which executes tools itself.
 
-Requires the benchmark: pip install "tau2 @ git+https://github.com/sierra-research/tau2-bench" websockets audioop-lts
-(Python 3.12 or 3.13).
+Requires TAU2_DATA_DIR pointing at a tau2-bench checkout's data/ folder; the
+package itself is a main dependency (Python 3.13).
 """
 from __future__ import annotations
 

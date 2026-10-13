@@ -5,6 +5,11 @@ import pytest
 
 pytest.importorskip("tau2")
 
+from tau2.utils.utils import DATA_DIR  # noqa: E402
+
+if not DATA_DIR.exists():
+    pytest.skip(f"τ² data not found at {DATA_DIR}; set TAU2_DATA_DIR", allow_module_level=True)
+
 from fakes import FakeLLM, Sequence, text, tool  # noqa: E402
 from tau2.user.user_simulator import UserSimulator  # noqa: E402
 from tau2.data_model.message import UserMessage  # noqa: E402
