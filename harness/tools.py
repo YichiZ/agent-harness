@@ -74,12 +74,19 @@ def _note(b: Backend, a: dict) -> dict:
     return {"ok": True}
 
 
+def _refunded(b: Backend, order_id: str) -> float:
+    return sum(r["amount_usd"] for r in b.refunds if r["order_id"] == order_id)
+
+
 def _refund(b: Backend, a: dict) -> dict:
     paid = b.payments.get(a["order_id"])
     if paid is None:
         raise ValueError(f"unknown order {a['order_id']}")
-    if a["amount_usd"] > paid:
-        raise ValueError(f"refund {a['amount_usd']} exceeds amount paid {paid}")
+    if a["amount_usd"] <= 0:
+        raise ValueError(f"refund amount must be positive, got {a['amount_usd']}")
+    left = paid - _refunded(b, a["order_id"])
+    if a["amount_usd"] > left:
+        raise ValueError(f"refund {a['amount_usd']} exceeds the {left} left to refund on {a['order_id']}")
     r = {"order_id": a["order_id"], "amount_usd": a["amount_usd"]}
     b.refunds.append(r)
     for c in b.complaints:
@@ -89,8 +96,11 @@ def _refund(b: Backend, a: dict) -> dict:
 
 
 def _refund_needs_approval(b: Backend, a: dict) -> str | None:
-    if a.get("amount_usd", 0) > APPROVAL_LIMIT_USD:
-        return f"refund of ${a['amount_usd']:.2f} on {a.get('order_id')} is over the ${APPROVAL_LIMIT_USD:.0f} limit"
+    # Counted per order, so a large refund can't be split into small ones to dodge approval.
+    total = a.get("amount_usd", 0) + _refunded(b, a.get("order_id"))
+    if total > APPROVAL_LIMIT_USD:
+        return (f"refund of ${a['amount_usd']:.2f} on {a.get('order_id')} brings it to ${total:.2f},"
+                f" over the ${APPROVAL_LIMIT_USD:.0f} limit")
     return None
 
 

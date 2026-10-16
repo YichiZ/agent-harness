@@ -60,7 +60,8 @@ class Agent:
         self.episodic = EpisodicMemory(store, self.embedder)
         self.consolidator = Consolidator(release, llm, store, self.embedder, self.tracer) if consolidate else None
 
-    def run(self, user_id: str, chat_id: str, prompt: str, *, approved: set[str] = frozenset()) -> RunResult:
+    def run(self, user_id: str, chat_id: str, prompt: str, *, approved: list[dict] = ()) -> RunResult:
+        """`approved` holds `pending_approval` dicts from earlier runs; only those exact calls may run."""
         r = self.release
         with self.tracer.run(user_id=user_id, chat_id=chat_id, release_tag=r.tag, prompt=prompt) as (root, trace_id):
             with self.tracer.span("working-memory", as_type="retriever", input=prompt) as obs:
@@ -81,7 +82,7 @@ class Agent:
         self.tracer.flush()
         return result
 
-    def _loop(self, wm: WorkingMemory, trace_id: str, approved: set[str]) -> RunResult:
+    def _loop(self, wm: WorkingMemory, trace_id: str, approved: list[dict]) -> RunResult:
         r = self.release
         messages = list(wm.messages)
         specs = [t.spec() for t in self.tools.values()]
@@ -105,7 +106,8 @@ class Agent:
             if c.stop_reason == "refusal":
                 return self._guardrail(trace_id, "refusal", step, cost, calls, "I can't help with that request.")
             if not c.tool_uses:
-                return RunResult(c.text.strip(), "done", step, cost, trace_id, calls)
+                # an empty reply would be replayed as empty content next turn, which the API rejects
+                return RunResult(c.text.strip() or "(no reply)", "done", step, cost, trace_id, calls)
 
             results, stop = [], None
             for tu in c.tool_uses:
@@ -125,7 +127,7 @@ class Agent:
                                f"I stopped after {r.max_steps} steps without finishing. Here is what I did: "
                                + (", ".join(c.name for c in calls) or "nothing") + ".")
 
-    def _call_tool(self, tu: dict, approved: set[str]):
+    def _call_tool(self, tu: dict, approved: list[dict]):
         name, args = tu["name"], tu.get("input") or {}
         tool = self.tools.get(name)
         with self.tracer.span(f"tool:{name}", as_type="tool", input=args) as obs:
@@ -135,7 +137,7 @@ class Agent:
             elif tool.ends_turn:
                 out, err = tool.run(self.backend, args), False
                 stop = ("asked_user", args.get("question", ""), None)
-            elif (reason := tool.needs_approval(self.backend, args)) and name not in approved:
+            elif (reason := tool.needs_approval(self.backend, args)) and {"tool": name, "input": args} not in approved:
                 out, err = f"Not run: needs operator approval ({reason}).", True
                 stop = ("needs_approval", f"I need your approval first: {reason}.", {"tool": name, "input": args})
             else:

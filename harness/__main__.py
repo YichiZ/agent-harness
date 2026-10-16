@@ -97,7 +97,7 @@ def main(argv: list[str] | None = None) -> int:
         print(res.reply)
         if res.pending_approval and input("approve? [y/N] ").strip().lower() == "y":
             res = agent.run(args.user, chat_id, f"Approved. Go ahead with: {line}",
-                            approved={res.pending_approval["tool"]})
+                            approved=[res.pending_approval])
             print(res.reply)
         print(f"  [{res.stop}, {res.steps} steps, ${res.cost_usd:.4f}, trace {res.trace_id}]")
     return 0

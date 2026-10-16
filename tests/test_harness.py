@@ -68,8 +68,38 @@ def test_large_refund_needs_approval_and_does_not_run(release):
 
 def test_approved_refund_runs(release):
     agent, _ = agent_with(release, tool(("refund_payment", {"order_id": "A-1004", "amount_usd": 640.0})), text("Refunded."))
-    res = agent.run("op-1", "c", "Approved: refund A-1004", approved={"refund_payment"})
+    pending = {"tool": "refund_payment", "input": {"order_id": "A-1004", "amount_usd": 640}}
+    res = agent.run("op-1", "c", "Approved: refund A-1004", approved=[pending])
     assert res.stop == "done" and agent.backend.refunds == [{"order_id": "A-1004", "amount_usd": 640.0}]
+
+
+def test_approval_covers_only_the_approved_call(release):
+    agent, _ = agent_with(release, tool(("refund_payment", {"order_id": "A-1004", "amount_usd": 600.0})))
+    pending = {"tool": "refund_payment", "input": {"order_id": "A-1004", "amount_usd": 550.0}}
+    res = agent.run("op-1", "c", "Approved: refund A-1004", approved=[pending])
+    assert res.stop == "needs_approval" and agent.backend.refunds == []
+
+
+def test_refunds_cannot_exceed_paid_or_be_split_under_the_limit(release):
+    agent, _ = agent_with(release,
+                          tool(("refund_payment", {"order_id": "A-1001", "amount_usd": 89.0})),
+                          tool(("refund_payment", {"order_id": "A-1001", "amount_usd": 89.0}),
+                               ("refund_payment", {"order_id": "A-1002", "amount_usd": -50.0})),
+                          tool(("refund_payment", {"order_id": "A-1004", "amount_usd": 320.0})),
+                          tool(("refund_payment", {"order_id": "A-1004", "amount_usd": 320.0})))
+    res = agent.run("op-1", "c", "refund things")
+    assert [c.is_error for c in res.tool_calls] == [False, True, True, False, True]
+    assert res.stop == "needs_approval"
+    assert agent.backend.refunds == [{"order_id": "A-1001", "amount_usd": 89.0},
+                                     {"order_id": "A-1004", "amount_usd": 320.0}]
+
+
+def test_empty_reply_is_not_replayed_as_empty_content(release):
+    store = Store()
+    agent, llm = agent_with(release, text(""), text("ok"), store=store)
+    agent.run("op-1", "c", "first")
+    agent.run("op-1", "c", "second")
+    assert all(m["content"] for m in llm.calls[-1]["messages"])
 
 
 def test_ask_user_ends_turn_with_the_question(release):
@@ -237,3 +267,13 @@ def test_load_env_reads_dotenv_without_overriding(tmp_path, monkeypatch):
     load_env(env)
     assert os.environ["HARNESS_FROM_FILE"] == "from-file"
     assert os.environ["HARNESS_ALREADY_SET"] == "from-env"
+
+
+def test_pass_hat_k_uses_the_unbiased_estimator():
+    pytest.importorskip("tau2")
+    from harness.bench.tau2 import Tau2Report, TaskAttempt
+    # one task, 4 trials, 2 successes: pass^1 = 2/4, pass^2 = C(2,2)/C(4,2) = 1/6
+    attempts = [TaskAttempt("0", t, r, "", 0.0, "", None) for t, r in enumerate([0.0, 1.0, 1.0, 0.0])]
+    report = Tau2Report("airline", "v", attempts)
+    assert report.pass_hat_k(1) == 0.5
+    assert abs(report.pass_hat_k(2) - 1 / 6) < 1e-9

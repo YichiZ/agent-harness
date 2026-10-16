@@ -19,6 +19,7 @@ package itself is a main dependency (Python 3.13).
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -138,11 +139,12 @@ class Tau2Report:
     gate_passed: bool = False
 
     def pass_hat_k(self, k: int) -> float:
-        """τ-bench pass^k: share of tasks whose first k attempts all succeed."""
+        """τ-bench pass^k: mean over tasks of C(successes, k) / C(trials, k)."""
         by_task: dict[str, list[float]] = {}
         for a in self.attempts:
             by_task.setdefault(a.task_id, []).append(a.reward)
-        ok = [all(r >= 1.0 for r in rs[:k]) for rs in by_task.values() if len(rs) >= k]
+        ok = [math.comb(sum(r >= 1.0 for r in rs), k) / math.comb(len(rs), k)
+              for rs in by_task.values() if len(rs) >= k]
         return sum(ok) / len(ok) if ok else 0.0
 
     def to_json(self) -> dict[str, Any]:
