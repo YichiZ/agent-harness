@@ -29,6 +29,7 @@ from tau2.environment.tool import Tool as Tau2Tool
 from tau2.evaluator.evaluator import EvaluationType
 from tau2.orchestrator.orchestrator import Orchestrator
 from tau2.runner import build_environment, build_user, get_tasks, run_simulation
+from tau2.user.user_simulator import UserSimulator
 
 from ..config import ROOT, Release
 from ..llm import LLM
@@ -117,6 +118,27 @@ class HarnessTau2Agent(HalfDuplexAgent[Tau2State]):
         if m.tool_calls:
             return [{"type": "tool_use", "id": t.id, "name": t.name, "input": t.arguments} for t in m.tool_calls]
         return [{"type": "text", "text": m.content or ""}]
+
+
+class HumanUser(UserSimulator):
+    """You play the customer in the terminal. An empty line or Ctrl-D ends the conversation."""
+    def __init__(self):
+        super().__init__(llm="human")
+
+    def _generate_next_message(self, message, state):
+        if isinstance(message, AssistantMessage) and message.content:
+            print(f"\nagent: {message.content}")
+        try:
+            line = input("\nyou> ").strip()
+        except EOFError:
+            line = ""
+        return UserMessage(role="user", content=line or "###STOP###")
+
+
+def human_user(env, task) -> HumanUser:
+    print(f"τ² task {task.id}. Your role as the customer:\n{task.user_scenario}\n"
+          "(empty line to finish; the run is then graded)")
+    return HumanUser()
 
 
 @dataclass
