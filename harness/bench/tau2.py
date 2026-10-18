@@ -121,24 +121,29 @@ class HarnessTau2Agent(HalfDuplexAgent[Tau2State]):
 
 
 class HumanUser(UserSimulator):
-    """You play the customer in the terminal. An empty line or Ctrl-D ends the conversation."""
-    def __init__(self):
-        super().__init__(llm="human")
+    """You play the customer in the terminal. /done or Ctrl-D ends the conversation.
+
+    ponytail: text only, no user-side tools, so domains where the customer acts
+    on a device (telecom) can't be passed by hand; airline and retail can."""
+    def __init__(self, instructions: str):
+        super().__init__(llm="human", instructions=instructions)
 
     def _generate_next_message(self, message, state):
         if isinstance(message, AssistantMessage) and message.content:
             print(f"\nagent: {message.content}")
-        try:
-            line = input("\nyou> ").strip()
-        except EOFError:
-            line = ""
-        return UserMessage(role="user", content=line or "###STOP###")
+        line = ""
+        while not line:  # an accidental Enter re-prompts instead of ending the run
+            try:
+                line = input("\nyou> ").strip()
+            except EOFError:
+                line = "/done"
+        return UserMessage(role="user", content="###STOP###" if line == "/done" else line)
 
 
 def human_user(env, task) -> HumanUser:
     print(f"τ² task {task.id}. Your role as the customer:\n{task.user_scenario}\n"
-          "(empty line to finish; the run is then graded)")
-    return HumanUser()
+          "(/done or Ctrl-D to finish; the run is then graded)")
+    return HumanUser(str(task.user_scenario))
 
 
 @dataclass
@@ -178,7 +183,8 @@ class Tau2Report:
 def run_tau2(release: Release, llm: LLM, *, domain: str = "airline", task_ids: list[str] | None = None,
              num_tasks: int | None = None, trials: int = 1, user_llm: str | None = None,
              tracer: Tracer | None = None, user_factory=None,
-             evaluation_type: EvaluationType = EvaluationType.ALL) -> Tau2Report:
+             evaluation_type: EvaluationType = EvaluationType.ALL,
+             tags: tuple[str, ...] = ()) -> Tau2Report:
     tracer = tracer or Tracer()
     tasks = get_tasks(domain, task_ids=task_ids, num_tasks=num_tasks)
     report = Tau2Report(domain, release.tag, [])
@@ -192,7 +198,7 @@ def run_tau2(release: Release, llm: LLM, *, domain: str = "airline", task_ids: l
                                 max_steps=100, max_errors=10, seed=trial)
             with tracer.run(user_id=f"tau2-{domain}", chat_id=f"{domain}-{task.id}-t{trial}",
                             release_tag=release.tag, prompt=f"τ² {domain} task {task.id}",
-                            tags=["tau2", domain]) as (root, trace_id):
+                            tags=["tau2", domain, *tags]) as (root, trace_id):
                 sim = run_simulation(orch, evaluation_type=evaluation_type)
                 reward = float(sim.reward_info.reward) if sim.reward_info else 0.0
                 db = sim.reward_info.db_check if sim.reward_info else None

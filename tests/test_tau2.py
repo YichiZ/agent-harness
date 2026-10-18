@@ -48,13 +48,13 @@ def run(release, *agent_steps, lines=("###STOP###",)):
 def test_human_user_types_the_customer_side(release, monkeypatch, capsys):
     from harness.bench.tau2 import HumanUser
 
-    typed = iter([OPENING, ""])  # an empty line ends the conversation
+    typed = iter([OPENING, "", "/done"])  # an empty line re-prompts; /done ends it
     monkeypatch.setattr("builtins.input", lambda prompt="": next(typed))
     llm = FakeLLM(Sequence(
         tool(("get_reservation_details", {"reservation_id": "EHGLP3"})),
         text("I can't cancel EHGLP3 under our policy."),
     ))
-    report = run_tau2(release, llm, task_ids=["0"], user_factory=lambda env, task: HumanUser(),
+    report = run_tau2(release, llm, task_ids=["0"], user_factory=lambda env, task: HumanUser("Emma Kim"),
                       evaluation_type=EvaluationType.ENV)
     [a] = report.attempts
     assert a.reward == 1.0

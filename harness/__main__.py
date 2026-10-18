@@ -50,7 +50,7 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--num-tasks", type=int, default=None)
     t.add_argument("--trials", type=int, default=1, help="attempts per task, for pass^k")
     t.add_argument("--user-llm", default=None, help="litellm model id for the simulated user")
-    t.add_argument("--human", action="store_true", help="you type the customer's side; result is not saved")
+    t.add_argument("--human", action="store_true", help="you type the customer's side; needs --tasks; no result file, traces tagged human")
     k = sub.add_parser("consolidate")
     k.add_argument("--user", default="op-1")
     k.add_argument("--db", default=str(ROOT / "harness.db"))
@@ -76,13 +76,21 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "tau2":
         from .bench.tau2 import human_user, run_tau2, save
 
+        if args.human and (not args.tasks or args.user_llm):
+            p.error("--human needs --tasks (it is interactive) and replaces --user-llm")
+        if args.human:  # τ²'s per-step DEBUG logs would drown the conversation
+            from loguru import logger
+
+            logger.remove()
+            logger.add(sys.stderr, level="ERROR")
+
         report = run_tau2(release, llm, domain=args.domain, num_tasks=args.num_tasks, trials=args.trials,
                           task_ids=args.tasks.split(",") if args.tasks else None, user_llm=args.user_llm,
-                          user_factory=human_user if args.human else None)
+                          user_factory=human_user if args.human else None, tags=("human",) if args.human else ())
         if args.human:
             for a in report.attempts:
                 print(f"\ntask {a.task_id}: reward {a.reward} (db match {a.db_match}), "
-                      f"agent cost ${a.cost_usd:.2f}, trace {a.trace_id}")
+                      f"agent cost ${a.cost_usd:.4f}, trace {a.trace_id}")
             return 0
         out = save(report)
         summary = report.to_json()
