@@ -65,7 +65,6 @@ class Completion:
     model: str
     input_tokens: int = 0
     output_tokens: int = 0
-    raw_usage: dict[str, Any] = field(default_factory=dict)
 
     @property
     def text(self) -> str:
@@ -136,7 +135,6 @@ class AnthropicLLM:
             model=resp.model or model,
             input_tokens=usage.get("input_tokens") or 0,
             output_tokens=usage.get("output_tokens") or 0,
-            raw_usage={k: v for k, v in usage.items() if isinstance(v, int)},
         )
 
 
@@ -193,8 +191,8 @@ class Agent:
 
         for step in range(1, r.max_steps + 1):
             if cost >= r.max_cost_usd:
-                return self._guardrail("max_cost", step - 1, cost, calls,
-                                       f"I stopped before finishing: this request hit the ${r.max_cost_usd:.2f} cost limit.")
+                return RunResult(f"I stopped before finishing: this request hit the ${r.max_cost_usd:.2f} cost limit.",
+                                 "max_cost", step - 1, cost, calls)
 
             c = self.llm.complete(model=r.agent_model, system=wm.system, messages=messages,
                                   tools=specs, effort=r.agent_effort)
@@ -202,7 +200,7 @@ class Agent:
             messages.append({"role": "assistant", "content": c.content})
 
             if c.stop_reason == "refusal":
-                return self._guardrail("refusal", step, cost, calls, "I can't help with that request.")
+                return RunResult("I can't help with that request.", "refusal", step, cost, calls)
             if not c.tool_uses:
                 return RunResult(c.text.strip(), "done", step, cost, calls)
 
@@ -216,13 +214,11 @@ class Agent:
 
             if stop:
                 kind, reply, pending = stop
-                res = self._guardrail(kind, step, cost, calls, reply)
-                res.pending_approval = pending
-                return res
+                return RunResult(reply, kind, step, cost, calls, pending_approval=pending)
 
-        return self._guardrail("max_steps", r.max_steps, cost, calls,
-                               f"I stopped after {r.max_steps} steps without finishing. Here is what I did: "
-                               + (", ".join(c.name for c in calls) or "nothing") + ".")
+        done = ", ".join(c.name for c in calls) or "nothing"
+        return RunResult(f"I stopped after {r.max_steps} steps without finishing. Here is what I did: {done}.",
+                         "max_steps", r.max_steps, cost, calls)
 
     def _call_tool(self, tu: dict, approved: set[str]):
         name, args = tu["name"], tu.get("input") or {}
@@ -244,7 +240,3 @@ class Agent:
         block = {"type": "tool_result", "tool_use_id": tu["id"],
                  "content": out if isinstance(out, str) else json.dumps(out), "is_error": err}
         return ToolCall(name, args, out, err), block, stop
-
-    @staticmethod
-    def _guardrail(kind, steps, cost, calls, reply) -> RunResult:
-        return RunResult(reply, kind, steps, cost, calls)
