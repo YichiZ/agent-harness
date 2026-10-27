@@ -1,8 +1,8 @@
 """Agentic tools (the "schedule meeting / CRM / payments" box), over an in-memory backend.
 
-The backend is a stand-in for real CRM, calendar and payment APIs. Because its
-state is inspectable, evals can check outcomes in code ("was the meeting
-actually booked?") instead of trusting the model's reply.
+The backend is a stand-in for real CRM, calendar and payment APIs. Its state is
+inspectable, so tests can check outcomes in code ("was the meeting actually
+booked?") instead of trusting the model's reply.
 """
 from __future__ import annotations
 

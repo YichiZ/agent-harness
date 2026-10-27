@@ -6,7 +6,7 @@ import itertools
 import json
 from typing import Any, Callable
 
-from harness.llm import Completion
+from harness.agent import Completion
 
 _ids = itertools.count(1)
 
@@ -37,7 +37,7 @@ class FakeLLM:
 
 
 class Sequence:
-    """Returns agent completions in order, per run; summarizer/judge calls go to `side`."""
+    """Returns agent completions in order, per run; summarizer calls go to `side`."""
 
     def __init__(self, *steps: Completion, side: Callable[[dict], Completion] | None = None):
         self.steps = list(steps)
