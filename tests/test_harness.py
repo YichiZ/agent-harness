@@ -4,10 +4,8 @@ import os
 import pytest
 from fakes import FakeLLM, Sequence, as_json, text, tool
 
-from harness.config import Release
-from harness.loop import Agent
-from harness.memory import ProceduralMemory
-from harness.store import Store
+from harness.agent import Agent, Release
+from harness.memory import ProceduralMemory, Store
 from harness.tools import Backend
 
 
@@ -152,7 +150,7 @@ def test_anthropic_client_request_shape_and_parsing():
     """Checks the real SDK types round-trip; no network."""
     from anthropic.types.beta import BetaMessage
 
-    from harness.llm import AnthropicLLM
+    from harness.agent import AnthropicLLM
 
     sent = {}
 

@@ -1,4 +1,6 @@
-"""The agent run: working memory -> LLM <-> tools loop -> end-loop guardrails -> reply.
+"""The agent: config, model client, and the loop.
+
+working memory -> LLM <-> tools loop -> end-loop guardrails -> reply.
 
 Guardrails that end the loop (each sets `RunResult.stop`):
   done            the model answered without calling a tool
@@ -14,16 +16,131 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from typing import Any
+from pathlib import Path
+from typing import Any, Protocol
 
-from .config import Release
-from .consolidate import Consolidator
-from .embed import Embedder, HashingEmbedder
-from .llm import LLM
-from .memory import EpisodicMemory, ProceduralMemory, SemanticMemory, WorkingMemory, build_working_memory
-from .store import Store
+from .memory import (ROOT, Consolidator, Embedder, EpisodicMemory, HashingEmbedder, ProceduralMemory,
+                     SemanticMemory, Store, WorkingMemory, build_working_memory)
 from .tools import TOOLS, Backend, Tool
 
+
+# ── config: models, loop budgets and memory knobs, read from release.json ──
+
+@dataclass(frozen=True)
+class Release:
+    prompt_version: str
+    agent_model: str
+    agent_effort: str
+    summarizer_model: str
+    max_steps: int
+    max_cost_usd: float
+    history_turns: int
+    semantic_top_k: int
+    episodic_top_k: int
+    episodic_recent_k: int
+    consolidate_every_n_chats: int
+
+    @classmethod
+    def load(cls, path: Path | None = None) -> "Release":
+        return cls(**json.loads((path or ROOT / "release.json").read_text()))
+
+    def system_prompt(self) -> str:
+        return (ROOT / "prompts" / f"system.{self.prompt_version}.md").read_text()
+
+
+# ── model client: the loop only sees `LLM.complete`, so tests swap in a fake ──
+
+# $ per million tokens (input, output), Claude API list prices.
+PRICES = {
+    "claude-opus-5-5": (4.00, 20.00),
+    "claude-sonnet-5-5": (2.00, 10.00),
+    "claude-haiku-5-5": (0.10, 0.50),
+}
+
+
+@dataclass
+class Completion:
+    content: list[dict[str, Any]]  # Anthropic content blocks, passed back unchanged
+    stop_reason: str
+    model: str
+    input_tokens: int = 0
+    output_tokens: int = 0
+    raw_usage: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def text(self) -> str:
+        return "".join(b.get("text", "") for b in self.content if b.get("type") == "text")
+
+    @property
+    def tool_uses(self) -> list[dict[str, Any]]:
+        return [b for b in self.content if b.get("type") == "tool_use"]
+
+    @property
+    def cost_usd(self) -> float:
+        inp, out = PRICES.get(self.model, (0.0, 0.0))
+        return (self.input_tokens * inp + self.output_tokens * out) / 1_000_000
+
+
+class LLM(Protocol):
+    def complete(
+        self,
+        *,
+        model: str,
+        system: str,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]] | None = None,
+        effort: str | None = None,
+        json_schema: dict[str, Any] | None = None,
+        max_tokens: int = 16000,
+    ) -> Completion: ...
+
+
+class AnthropicLLM:
+    """Claude via the official SDK.
+
+    Server-side refusal fallbacks are on (`fallbacks="default"`), so a request a
+    safety classifier declines is re-run on Anthropic's recommended model inside
+    the same call instead of ending the run.
+    """
+
+    def __init__(self, client: Any | None = None):
+        import anthropic
+
+        self.client = client or anthropic.Anthropic()
+
+    def complete(self, *, model, system, messages, tools=None, effort=None,
+                 json_schema=None, max_tokens=16000) -> Completion:
+        kwargs: dict[str, Any] = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "system": system,
+            "messages": messages,
+            "betas": ["server-side-fallback-2026-07-01"],
+            "fallbacks": "default",
+        }
+        if tools:
+            kwargs["tools"] = tools
+        output_config: dict[str, Any] = {}
+        if effort:
+            output_config["effort"] = effort
+        if json_schema:
+            output_config["format"] = {"type": "json_schema", "schema": json_schema}
+        if output_config:
+            kwargs["output_config"] = output_config
+
+        resp = self.client.beta.messages.create(**kwargs)
+        usage = resp.usage.model_dump() if resp.usage else {}
+        return Completion(
+            content=[b.model_dump(exclude_none=True) for b in resp.content],
+            stop_reason=resp.stop_reason or "",
+            model=resp.model or model,
+            input_tokens=usage.get("input_tokens") or 0,
+            output_tokens=usage.get("output_tokens") or 0,
+            raw_usage={k: v for k, v in usage.items() if isinstance(v, int)},
+        )
+
+
+# ── the loop ──────────────────────────────────────────────────────────────
 
 @dataclass
 class ToolCall:

@@ -6,7 +6,7 @@ import itertools
 import json
 from typing import Any, Callable
 
-from harness.llm import Completion
+from harness.agent import Completion
 
 _ids = itertools.count(1)
 
