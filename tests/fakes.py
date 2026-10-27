@@ -37,7 +37,7 @@ class FakeLLM:
 
 
 class Sequence:
-    """Returns agent completions in order, per run; summarizer/judge calls go to `side`."""
+    """Returns agent completions in order, per run; summarizer calls go to `side`."""
 
     def __init__(self, *steps: Completion, side: Callable[[dict], Completion] | None = None):
         self.steps = list(steps)

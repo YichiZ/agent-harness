@@ -1,12 +1,10 @@
 import dataclasses
-import json
 import os
 
 import pytest
 from fakes import FakeLLM, Sequence, as_json, text, tool
 
 from harness.config import Release
-from harness.evals import check, run_evals
 from harness.loop import Agent
 from harness.memory import ProceduralMemory
 from harness.store import Store
@@ -138,34 +136,6 @@ def test_consolidation_waits_for_n_chats_then_distills_and_replaces_facts(releas
     assert set(facts[0].source_chat_ids) == {"c1", "c2", "c3", "c4"}
 
 
-# ── LLM Ops ───────────────────────────────────────────────────────────────
-
-def test_release_tag_changes_with_config(release):
-    assert release.tag == dataclasses.replace(release).tag
-    assert release.tag != dataclasses.replace(release, semantic_top_k=9).tag
-
-
-def test_checks_are_deterministic_on_backend_state(release):
-    agent, _ = agent_with(release, tool(("refund_payment", {"order_id": "A-1001", "amount_usd": 89.0})), text("done"))
-    res = agent.run("op-1", "c", "deal with it")
-    failed = check({"tools_not_called": ["refund_payment"], "asks_user": True}, res, agent.backend)
-    assert failed == ["tools_not_called:refund_payment", "asks_user"]
-
-
-def test_eval_gate(release):
-    dataset = [
-        {"id": "good", "user_id": "u", "prompt": "list complaints", "expect": {"tools_called": ["list_complaints"]}},
-        {"id": "bad", "user_id": "u", "prompt": "deal with it", "expect": {"asks_user": True}},
-    ]
-    agent_steps = Sequence(tool(("list_complaints", {"days": 60})), text("3 complaints."), text("Done!"))
-    judge = FakeLLM(lambda c: as_json({"score": 5 if "3 complaints" in c["messages"][0]["content"] else 2, "reason": "r"}))
-    report = run_evals(release, FakeLLM(agent_steps), dataset=dataset, judge_llm=judge)
-    assert [c.passed for c in report.cases] == [True, False]
-    assert report.mean_judge == 3.5 and report.pass_rate == 0.5
-    assert report.gate_passed is False  # pass rate 50% < 80%
-    assert json.loads(json.dumps(report.to_json()))["cases"][1]["failed_checks"] == ["asks_user"]
-
-
 def test_memory_is_isolated_per_user(release):
     store = Store()
     agent, llm = agent_with(release, text("ok"), text("ok"), store=store)
@@ -176,22 +146,6 @@ def test_memory_is_isolated_per_user(release):
     agent.run("op-2", "b", "Book follow-up meetings")
     assert "Tuesday" not in llm.calls[-1]["system"]
     assert "[chat a]" not in llm.calls[-1]["system"]
-
-
-def test_langfuse_tracer_records_a_run(release, monkeypatch):
-    """Exercises the real Langfuse SDK calls; export goes nowhere (unreachable host)."""
-    monkeypatch.setenv("LANGFUSE_PUBLIC_KEY", "pk-lf-test")
-    monkeypatch.setenv("LANGFUSE_SECRET_KEY", "sk-lf-test")
-    monkeypatch.setenv("LANGFUSE_BASE_URL", "http://127.0.0.1:9")
-    from harness.tracing import Tracer
-
-    tracer = Tracer()
-    assert tracer.enabled
-    llm = FakeLLM(Sequence(tool(("list_complaints", {"days": 60})), text("3 complaints.")))
-    agent = Agent(release, llm, Store(), tracer=tracer, consolidate=False)
-    res = agent.run("op-1", "c", "list complaints")
-    assert res.stop == "done" and len(res.trace_id) == 32 and not res.trace_id.startswith("local-")
-    tracer.score(res.trace_id, "judge_quality", 5.0, "fine")
 
 
 def test_anthropic_client_request_shape_and_parsing():

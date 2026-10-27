@@ -16,7 +16,6 @@ from .store import Store
 if TYPE_CHECKING:
     from .config import Release
     from .llm import LLM
-    from .tracing import Tracer
 
 REPLACE_SIMILARITY = 0.6
 
@@ -36,8 +35,8 @@ FACTS_SCHEMA = {
 
 
 class Consolidator:
-    def __init__(self, release: "Release", llm: "LLM", store: Store, embedder: Embedder, tracer: "Tracer"):
-        self.release, self.llm, self.store, self.embedder, self.tracer = release, llm, store, embedder, tracer
+    def __init__(self, release: "Release", llm: "LLM", store: Store, embedder: Embedder):
+        self.release, self.llm, self.store, self.embedder = release, llm, store, embedder
 
     def pending_chats(self, user_id: str) -> int:
         return len({e.chat_id for e in self.store.episodes(user_id, after_id=self.store.watermark(user_id))})
@@ -56,14 +55,10 @@ class Consolidator:
         known = "\n".join(f"- {f.fact}" for f in existing) or "(none)"
         prompt = f"Existing facts:\n{known}\n\nConversation log:\n{log}"
 
-        with self.tracer.span("consolidate", as_type="generation", model=self.release.summarizer_model,
-                              input=prompt, metadata={"user_id": user_id, "episodes": len(new)}) as gen:
-            c = self.llm.complete(model=self.release.summarizer_model, system=SUMMARIZER_SYSTEM,
-                                  messages=[{"role": "user", "content": prompt}],
-                                  json_schema=FACTS_SCHEMA, max_tokens=4000)
-            facts = [f.strip() for f in json.loads(c.text or '{"facts": []}').get("facts", []) if f.strip()]
-            gen.update(output=facts, usage_details={"input": c.input_tokens, "output": c.output_tokens},
-                       cost_details={"total": c.cost_usd})
+        c = self.llm.complete(model=self.release.summarizer_model, system=SUMMARIZER_SYSTEM,
+                              messages=[{"role": "user", "content": prompt}],
+                              json_schema=FACTS_SCHEMA, max_tokens=4000)
+        facts = [f.strip() for f in json.loads(c.text or '{"facts": []}').get("facts", []) if f.strip()]
 
         chat_ids = sorted({e.chat_id for e in new})
         vectors = self.embedder.embed(facts) if facts else []
