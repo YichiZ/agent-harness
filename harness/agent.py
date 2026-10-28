@@ -51,10 +51,6 @@ class Release:
     def summarizer_prompt(self) -> str:
         return self._prompt("summarizer")
 
-    def headings(self) -> dict[str, str]:
-        """Section headings and labels in working memory and the summarizer's input, one `key: text` per line."""
-        return dict(line.split(": ", 1) for line in self._prompt("headings").splitlines() if line.strip())
-
     def _prompt(self, kind: str) -> str:
         return (ROOT / self.prompts_dir / f"{kind}.{self.prompt_version}.md").read_text()
 

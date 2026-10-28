@@ -285,14 +285,13 @@ def build_working_memory(release: Release, procedural: ProceduralMemory, semanti
     episodes = episodic.recall(user_id, chat_id, prompt,
                                recent_k=release.episodic_recent_k, top_k=release.episodic_top_k)
 
-    h = release.headings()
     sections = [release.system_prompt().strip()]
     if skills:
-        sections.append(f"# {h['skills']}\n\n" + "\n\n".join(f"## {s.name}\n{s.body}" for s in skills))
+        sections.append("# Skills for this request\n\n" + "\n\n".join(f"## {s.name}\n{s.body}" for s in skills))
     if facts:
-        sections.append(f"# {h['facts']}\n" + "\n".join(f"- {f}" for f in facts))
+        sections.append("# What you know about this operator\n" + "\n".join(f"- {f}" for f in facts))
     if episodes:
-        sections.append(f"# {h['episodes']}\n" + "\n".join(f"- {e}" for e in episodes))
+        sections.append("# Relevant past conversations\n" + "\n".join(f"- {e}" for e in episodes))
 
     messages = episodic.history(user_id, chat_id, release.history_turns)
     messages.append({"role": "user", "content": prompt})
@@ -329,9 +328,8 @@ class Consolidator:
             return []
         existing = self.store.facts(user_id)
         log = "\n".join(f"[chat {e.chat_id}] {e.role}: {e.content}" for e in new)
-        h = self.release.headings()
-        known = "\n".join(f"- {f.fact}" for f in existing) or h["no_facts"]
-        prompt = f"{h['existing_facts']}:\n{known}\n\n{h['log']}:\n{log}"
+        known = "\n".join(f"- {f.fact}" for f in existing) or "(none)"
+        prompt = f"Existing facts:\n{known}\n\nConversation log:\n{log}"
 
         c = self.llm.complete(model=self.release.summarizer_model, system=self.release.summarizer_prompt(),
                               messages=[{"role": "user", "content": prompt}],

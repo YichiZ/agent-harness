@@ -139,11 +139,9 @@ def test_prompts_load_from_files_in_prompts_dir(release, tmp_path):
     assert "long-term memory" in release.summarizer_prompt()  # prompts/summarizer.v1.md
     (tmp_path / "system.t1.md").write_text("custom system")
     (tmp_path / "summarizer.t1.md").write_text("custom summarizer")
-    (tmp_path / "headings.t1.md").write_text("facts: What you know about this company\n")
     custom = dataclasses.replace(release, prompts_dir=str(tmp_path), prompt_version="t1")
     assert custom.system_prompt() == "custom system"
     assert custom.summarizer_prompt() == "custom summarizer"
-    assert custom.headings() == {"facts": "What you know about this company"}
 
 
 def test_memory_is_isolated_per_user(release):

@@ -16,7 +16,7 @@ git worktree add .claude/worktrees/<name> -b <branch>
 - `harness/memory.py`: SQLite store, the four memories, consolidation
 - `harness/tools.py`: demo customer-service tools over an in-memory backend
 - `harness/__main__.py`: CLI
-- `prompts/`: versioned system, summarizer and section-heading prompts (`Release.prompts_dir`)
+- `prompts/`: versioned system and summarizer prompts
 - `skills/`: procedural-memory skill files
 - `release.json`: models, budgets and memory knobs for the demo agent
 
