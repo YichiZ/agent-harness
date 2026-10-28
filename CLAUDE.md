@@ -18,6 +18,7 @@ git worktree add .claude/worktrees/<name> -b <branch>
 - `harness/__main__.py`: CLI
 - `prompts/`: versioned system, summarizer and section-heading prompts (`Release.prompts_dir`)
 - `skills/`: procedural-memory skill files
+- `bench/yc-bench/`: YC-Bench runner (`run.py`, `release.json`, `prompts/`, logged `results/`)
 - `release.json`: models, budgets and memory knobs for the demo agent
 
 ## Commands
@@ -27,4 +28,6 @@ uv sync
 uv run pytest -q
 uv run python -m harness chat --user op-1
 uv run python -m harness consolidate --user op-1
+uv run python bench/yc-bench/run.py --fake --max-checkpoints 3
+uv run python bench/yc-bench/run.py --seed 1 --max-checkpoints 10 --max-cost 5
 ```

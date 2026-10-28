@@ -1,0 +1,105 @@
+{
+  "checkpoint": 6,
+  "prompt": [
+    "## Checkpoint 6",
+    "- sim time: 2025-02-03T09:00:00",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $196,151.11",
+    "- monthly payroll: $38,365.03",
+    "- runway: ~5.1 months",
+    "- employees: 8",
+    "- active tasks: 3, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- monthly_payroll: {\"funds_after\": 19615111}"
+  ],
+  "tool_calls": [
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task list --status active"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "count": 3,
+          "tasks": [
+            {
+              "task_id": "Task-49",
+              "title": "Task-49",
+              "status": "active",
+              "client_name": "Helix Systems",
+              "progress_pct": 100.0,
+              "deadline": "2025-01-31T16:37:57.261059",
+              "at_risk": true
+            },
+            {
+              "task_id": "Task-119",
+              "title": "Task-119",
+              "status": "active",
+              "client_name": "Equinox Labs",
+              "progress_pct": 35.04,
+              "deadline": "2025-01-31T16:37:57.261059",
+              "at_risk": true
+            },
+            {
+              "task_id": "Task-101",
+              "title": "Task-101",
+              "status": "active",
+              "client_name": "Equinox Labs",
+              "progress_pct": 83.47,
+              "deadline": "2025-01-20T10:07:03.314455",
+              "at_risk": true
+            }
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    }
+  ],
+  "reply": [
+    "Three tasks are active and already past their deadlines. I can't change that now, so I'm leaving them to finish.",
+    "",
+    "Tasks are running, so I'm stopping here.",
+    "",
+    "- I didn't accept any new tasks this checkpoint. Task-49, Task-119 and Task-101 are active and all three are past their deadlines.",
+    "- Task-49 is at 100% progress, Task-101 at about 83%, and Task-119 at about 35%.",
+    "- Earlier checkpoints showed that large tasks need bigger teams, and that Cortex Intelligence and Stratos Cloud paid reliably.",
+    "- Prism Analytics and Vanguard ML both failed on us before. I'd steer clear of them or staff those tasks heavily."
+  ],
+  "stop": "done",
+  "steps": 2,
+  "model_calls": 3,
+  "cost_usd": 0.01765040000000001,
+  "total_cost_usd": 0.36690420000000007,
+  "sim_time_before": "2025-02-03T09:00:00",
+  "sim_time_after": "2025-02-03T13:24:54.010184",
+  "funds_before": 19615111,
+  "funds_after": 19038359,
+  "wake_events": [
+    {
+      "type": "task_completed",
+      "task_id": "8d80756e-f463-461d-ab21-39142f58593f",
+      "task_title": "Task-49",
+      "client_name": "Helix Systems",
+      "success": false,
+      "funds_delta": -576752,
+      "listed_reward": 1647864,
+      "trust_delta": 0.0,
+      "deadline_margin": "late by 69h",
+      "employees_assigned": 3,
+      "salary_bump_total_cents": 0,
+      "bankrupt": false
+    }
+  ],
+  "resume_error": null,
+  "facts": [
+    "Monthly payroll rose from $38,005.03 to $38,135.03 after the first checkpoint, mostly from salary bumps.",
+    "Prism Analytics failed Task-183 (1,201 units, two employees) by 90 hours, with a funds penalty of about $6,083 and no reward; the miss was attributed to understaffing.",
+    "Staffing a large task (about 1,200 units) with only two employees led to a late finish; use larger teams for big tasks.",
+    "Cortex Intelligence paid the full listed reward on Task-128, finishing 8 hours ahead of its deadline; it looks trustworthy."
+  ],
+  "recalled_episodes": 5
+}
