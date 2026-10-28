@@ -126,12 +126,22 @@ def test_consolidation_waits_for_n_chats_then_distills_and_replaces_facts(releas
     agent.run("op-1", "c2", "thanks")
     assert [f.fact for f in store.facts("op-1")] == ["Operator wants follow-up meetings booked for 45 minutes."]
     assert llm.calls[-1]["model"] == release.summarizer_model
+    assert llm.calls[-1]["system"] == release.summarizer_prompt()
 
     agent.run("op-1", "c3", "Actually make follow-up meetings 15 minutes from now on")
     agent.run("op-1", "c4", "ok")
     facts = store.facts("op-1")
     assert [f.fact for f in facts] == ["Operator wants follow-up meetings booked for 15 minutes."]  # replaced, not appended
     assert set(facts[0].source_chat_ids) == {"c1", "c2", "c3", "c4"}
+
+
+def test_prompts_load_from_files_in_prompts_dir(release, tmp_path):
+    assert "long-term memory" in release.summarizer_prompt()  # prompts/summarizer.v1.md
+    (tmp_path / "system.t1.md").write_text("custom system")
+    (tmp_path / "summarizer.t1.md").write_text("custom summarizer")
+    custom = dataclasses.replace(release, prompts_dir=str(tmp_path), prompt_version="t1")
+    assert custom.system_prompt() == "custom system"
+    assert custom.summarizer_prompt() == "custom summarizer"
 
 
 def test_memory_is_isolated_per_user(release):

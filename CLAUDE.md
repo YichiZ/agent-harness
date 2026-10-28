@@ -1,0 +1,30 @@
+# agent-harness
+
+## Rule: work in a worktree
+
+Make all code changes in a git worktree at `.claude/worktrees/<name>` on its own branch, never in the main checkout or a cloud copy:
+
+```bash
+git worktree add .claude/worktrees/<name> -b <branch>
+```
+
+`.claude/worktrees/` is git-ignored. Copy `.env` into the worktree if you need API calls.
+
+## Layout
+
+- `harness/agent.py`: config (`Release`), model client, the agent loop
+- `harness/memory.py`: SQLite store, the four memories, consolidation
+- `harness/tools.py`: demo customer-service tools over an in-memory backend
+- `harness/__main__.py`: CLI
+- `prompts/`: versioned system and summarizer prompts
+- `skills/`: procedural-memory skill files
+- `release.json`: models, budgets and memory knobs for the demo agent
+
+## Commands
+
+```bash
+uv sync
+uv run pytest -q
+uv run python -m harness chat --user op-1
+uv run python -m harness consolidate --user op-1
+```
