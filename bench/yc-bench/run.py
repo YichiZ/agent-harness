@@ -13,11 +13,15 @@ from __future__ import annotations
 
 import argparse
 import dataclasses
+import hashlib
 import itertools
 import json
 import os
+import shlex
+import subprocess
 import sys
 import traceback
+from importlib import metadata
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -29,15 +33,15 @@ ROOT = HERE.parent.parent
 sys.path.insert(0, str(ROOT))
 
 from harness.__main__ import load_env  # noqa: E402
-from harness.agent import Agent, AnthropicLLM, Completion, Release  # noqa: E402
+from harness.agent import PRICES, Agent, AnthropicLLM, Completion, Release  # noqa: E402
 from harness.memory import ProceduralMemory, Store  # noqa: E402
 from harness.tools import Tool, _obj  # noqa: E402
 
 STDOUT_LIMIT = 12_000
-REFUSED = {
-    "sim resume": "the runner advances time after you reply; just finish your turn",
-    "scratchpad": "your notes are kept by the harness memory; put them in your reply instead",
-}
+# The agent may observe and act; time (`sim`), the scratchpad and the run commands belong to the runner.
+ALLOWED_GROUPS = ("company", "employee", "market", "task", "client", "finance", "report")
+MONEY_KEYS = ("funds_delta", "listed_reward", "funds_after", "balance_delta")  # cents without a _cents suffix
+STALL_LIMIT = 3  # consecutive failed `sim resume` calls before the run stops
 
 
 # ── model: a cost meter around every completion (agent and summarizer) ─────
@@ -97,17 +101,38 @@ def _parse(text: str) -> dict:
 
 # ── the one tool ──────────────────────────────────────────────────────────
 
-def run_command_tool(execute) -> Tool:
+def check_command(command: str) -> str | None:
+    """Why a command is refused, or None when the agent may run it."""
+    try:
+        argv = shlex.split(command)
+    except ValueError as e:
+        return f"could not parse the command: {e}"
+    if not argv or argv[0] != "yc-bench":
+        return "only `yc-bench ...` commands are allowed"
+    if len(argv) < 2 or argv[1] not in ALLOWED_GROUPS:
+        group = argv[1] if len(argv) > 1 else "(none)"
+        return f"`yc-bench {group}` is not available here; allowed: {', '.join(ALLOWED_GROUPS)}"
+    return None
+
+
+def run_command_tool(execute, log: list[dict]) -> Tool:
+    """`log` gets each call as it runs, so a crash mid-checkpoint still records it."""
     def run(_backend, a: dict) -> dict:
         cmd = a["command"]
-        for word, why in REFUSED.items():
-            if word in cmd:
-                raise ValueError(f"`{word}` is not available here: {why}.")
+        call = {"name": "run_command", "input": {"command": cmd}, "result": None, "is_error": True}
+        log.append(call)
+        if err := check_command(cmd):
+            call["result"] = err
+            raise ValueError(err)
         r = execute(cmd)
         out = r.get("stdout") or ""
-        if len(out) > STDOUT_LIMIT:
-            out = out[:STDOUT_LIMIT] + "\n[truncated]"
-        return {"ok": r.get("ok"), "exit_code": r.get("exit_code"), "stdout": out, "stderr": r.get("stderr") or ""}
+        truncated = len(out) > STDOUT_LIMIT
+        if truncated:
+            out = out[:STDOUT_LIMIT] + f"\n[truncated: {len(r['stdout'])} chars total]"
+        result = {"ok": r.get("ok"), "exit_code": r.get("exit_code"), "stdout": out,
+                  "stderr": r.get("stderr") or "", "truncated": truncated}
+        call.update(result=result, is_error=False)
+        return result
 
     return Tool("run_command", "Run one `yc-bench` CLI command and get its JSON output.",
                 _obj({"command": {"type": "string", "description": "e.g. yc-bench market browse --limit 10"}},
@@ -120,19 +145,34 @@ def _usd(cents: int) -> str:
     return f"${cents / 100:,.2f}"
 
 
+def dollars(ev: dict) -> dict:
+    """Money fields in YC-Bench events are cents; give the agent dollars."""
+    out = {}
+    for k, v in ev.items():
+        if isinstance(v, (int, float)) and (k in MONEY_KEYS or k.endswith("_cents")):
+            out[k.removesuffix("_cents") + "_usd"] = round(v / 100, 2)
+        else:
+            out[k] = v
+    return out
+
+
 def event_line(ev: dict) -> str:
-    rest = {k: v for k, v in ev.items() if k != "type"}
-    for k in [k for k in rest if k in ("funds_delta", "listed_reward") or k.endswith("_cents")]:  # cents read as dollars otherwise
-        rest[k.removesuffix("_cents") + "_usd"] = rest.pop(k) / 100
+    rest = {k: v for k, v in dollars(ev).items() if k != "type"}
     return f"- {ev.get('type', 'event')}: {json.dumps(rest, default=str)}"
 
 
-def checkpoint_prompt(n: int, s: dict, wake_events: list[dict], resume_error: str | None) -> str:
+def load_lines(path: Path) -> dict[str, str]:
+    """A prompts file of `key: text` lines."""
+    return dict(line.split(": ", 1) for line in path.read_text().splitlines() if line.strip())
+
+
+def checkpoint_prompt(n: int, s: dict, wake_events: list[dict], resume_error: str | None,
+                      last_note: str | None, text: dict[str, str]) -> str:
     payroll = s["monthly_payroll_cents"]
     runway = f"~{s['funds_cents'] / payroll:.1f} months" if payroll else "unlimited (no payroll)"
     lines = [f"## Checkpoint {n}"]
     if n == 1:
-        lines.append("This is the start of the simulation. No time has passed yet.")
+        lines.append(text["start"])
     lines += [
         f"- sim time: {s['sim_time']}",
         f"- horizon end: {s['horizon_end']}",
@@ -142,11 +182,17 @@ def checkpoint_prompt(n: int, s: dict, wake_events: list[dict], resume_error: st
         f"- employees: {s['employee_count']}",
         f"- active tasks: {s['active_tasks']}, planned tasks: {s['planned_tasks']}",
     ]
+    if s["funds_cents"] < 0:
+        lines.append(f"\n{text['bankrupt']}")
+    elif s["active_tasks"] == 0:
+        lines.append(f"\n{text['undispatched' if s['planned_tasks'] else 'idle']}")
     if resume_error:
-        lines.append(f"\nThe runner could not advance time: {resume_error}")
+        lines.append(f"\n{text['resume_failed']} {resume_error}")
     if wake_events:
-        lines.append("\n### Events since the last checkpoint")
+        lines.append(f"\n### {text['events']}")
         lines += [event_line(ev) for ev in wake_events]
+    if last_note:
+        lines.append(f"\n### {text['last_note']}\n{last_note}")
     return "\n".join(lines)
 
 
@@ -174,6 +220,8 @@ def checkpoint_md(rec: dict) -> str:
     lines = [f"\n## Checkpoint {rec['checkpoint']} · {rec['sim_time_before']}\n",
              f"Funds {_usd(rec['funds_before'])} → {_usd(rec['funds_after'])}, "
              f"sim time → {rec['sim_time_after']}\n"]
+    if rec.get("error"):
+        lines.append(f"**Stopped by an error:** {rec['error']}\n")
     if rec.get("resume_error"):
         lines.append(f"Resume failed: {rec['resume_error']}\n")
     lines.append("**Commands**\n")
@@ -186,14 +234,14 @@ def checkpoint_md(rec: dict) -> str:
             failed = call["is_error"]
         lines.append(f"- {'✗' if failed else '$'} `{call['input'].get('command', '')}` → {_one_line(res, 120)}")
     lines.append("\n**Note**\n")
-    lines += [f"> {line}" for line in _text(rec["reply"]).splitlines()]
-    lines.append(f"\n{rec['stop']}, {rec['steps']} steps, {rec['model_calls']} model calls, "
+    lines += [f"> {line}" for line in _text(rec.get("reply", "")).splitlines()]
+    lines.append(f"\n{rec.get('stop')}, {rec.get('steps')} steps, {rec['model_calls']} model calls, "
                  f"${rec['cost_usd']:.4f} (total ${rec['total_cost_usd']:.4f})\n")
-    episodes = rec["recalled_episodes"]  # a count in runs before checkpoints/ existed
-    lines.append(f"**Memory it saw:** {len(rec['facts'])} facts, "
+    facts, episodes = rec.get("facts", []), rec.get("recalled_episodes", [])  # episodes: a count in early runs
+    lines.append(f"**Memory it saw:** {len(facts)} facts, "
                  f"{episodes if isinstance(episodes, int) else len(episodes)} recalled episodes")
-    lines += [f"- {f}" for f in rec["facts"]]
-    if rec["wake_events"]:
+    lines += [f"- {f}" for f in facts]
+    if rec.get("wake_events"):
         lines.append("\n**Events when time advanced**\n")
         lines += [event_line(ev) for ev in rec["wake_events"]]
     return "\n".join(lines) + "\n"
@@ -273,12 +321,43 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     return p.parse_args(argv)
 
 
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def provenance(release: Release) -> dict:
+    """What produced this run: repo commit, YC-Bench pin, prompt hashes."""
+    git = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True)
+    try:
+        pin = json.loads(metadata.distribution("yc-bench").read_text("direct_url.json") or "{}")
+        yc_bench = pin.get("vcs_info", {}).get("commit_id") or pin.get("url")
+    except metadata.PackageNotFoundError:
+        yc_bench = None
+    prompts = ROOT / release.prompts_dir
+    return {"git_sha": git.stdout.strip() or None, "yc_bench_commit": yc_bench,
+            "prompt_sha256": {p.name: _sha256(p) for p in sorted(prompts.glob(f"*.{release.prompt_version}.md"))}}
+
+
+def load_release(args: argparse.Namespace) -> Release:
+    release = Release.load(HERE / "release.json")
+    if args.model:
+        release = dataclasses.replace(release, agent_model=args.model)
+    if not args.fake:  # an unpriced model would make every cost cap a no-op
+        unpriced = [m for m in (release.agent_model, release.summarizer_model) if m not in PRICES]
+        if unpriced:
+            sys.exit(f"no price for {', '.join(unpriced)} in harness.agent.PRICES; cost caps would not work")
+    return release
+
+
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.render:
         return render(args.render)
+    release = load_release(args)
     started_at = f"{datetime.now():%Y-%m-%d %H:%M:%S}"
     out = (args.out or HERE / "runs" / f"{datetime.now():%Y%m%d-%H%M%S}-seed{args.seed}").resolve()
+    if out.exists() and any(out.iterdir()):
+        sys.exit(f"{out} is not empty; pick a new --out so an earlier run is not mixed in")
     out.mkdir(parents=True, exist_ok=True)
     # Set before importing yc_bench: the CLI subprocesses read these too.
     os.environ["DATABASE_URL"] = f"sqlite:///{out / 'world.db'}"
@@ -302,15 +381,18 @@ def main(argv: list[str] | None = None) -> int:
         with session_scope(factory) as session:
             yield session
 
+    def snapshot() -> dict:
+        with db() as s:
+            return _snapshot_state(s, company_id)
+
     company_id = _init_simulation(db, SimpleNamespace(seed=args.seed, company_name="BenchCo", start_date="2025-01-01"),
                                   cfg, cfg.sim.horizon_years)
 
-    release = Release.load(HERE / "release.json")
-    if args.model:
-        release = dataclasses.replace(release, agent_model=args.model)
     meter = CostMeter(FakeLLM() if args.fake else AnthropicLLM())
-    agent = Agent(release, meter, Store(out / "memory.db"), tools=[run_command_tool(run_command)],
+    calls: list[dict] = []
+    agent = Agent(release, meter, Store(out / "memory.db"), tools=[run_command_tool(run_command, calls)],
                   procedural=ProceduralMemory(skills_dir=out / "no-skills"))
+    text = load_lines(ROOT / release.prompts_dir / f"checkpoint.{release.prompt_version}.md")
     user_id = f"ycbench-seed{args.seed}"
     model = "fake" if args.fake else release.agent_model
     log = out / "run.md"
@@ -319,8 +401,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"YC-Bench seed {args.seed}, config {args.config}, model {model} → {out}")
 
     wake_events: list[dict] = []
-    resume_error: str | None = None
-    n, stop = 0, None
+    resume_error, last_note = None, None
+    n, stop, failed_resumes = 0, None, 0
     try:
         while stop is None:
             if args.max_checkpoints is not None and n >= args.max_checkpoints:
@@ -330,60 +412,68 @@ def main(argv: list[str] | None = None) -> int:
                 stop = "max_cost"
                 break
             n += 1
-            with db() as s:
-                before = _snapshot_state(s, company_id)
-            prompt = checkpoint_prompt(n, before, wake_events, resume_error)
-            spent, calls = meter.total, meter.calls
-            res = agent.run(user_id, f"cp-{n:03d}", prompt)
+            calls.clear()
+            before = snapshot()
+            prompt = checkpoint_prompt(n, before, wake_events, resume_error, last_note, text)
+            rec: dict[str, Any] = {"checkpoint": n, "prompt": prompt, "tool_calls": calls,
+                                   "sim_time_before": before["sim_time"], "funds_before": before["funds_cents"]}
+            spent, made = meter.total, meter.calls
+            try:
+                # The checkpoint's own cap never lets the run go past --max-cost.
+                agent.release = dataclasses.replace(release, max_cost_usd=min(release.max_cost_usd, args.max_cost - spent))
+                res = agent.run(user_id, f"cp-{n:03d}", prompt)
+                wm = res.working_memory
+                last_note = res.reply
+                rec.update(reply=res.reply, stop=res.stop, steps=res.steps, system=wm.system,
+                           facts=wm.facts, recalled_episodes=wm.episodes)
 
-            raw = run_command("yc-bench sim resume")
-            payload = _parse(raw.get("stdout") or "")
-            if payload.get("ok"):
-                wake_events, resume_error = payload.get("wake_events") or [], None
-                if payload.get("terminal_reason") in ("bankruptcy", "horizon_end"):
-                    stop = payload["terminal_reason"]
-            else:
-                wake_events = []
-                resume_error = payload.get("error") or raw.get("stderr") or "sim resume failed"
-            with db() as s:
-                after = _snapshot_state(s, company_id)
-
-            wm = res.working_memory
-            rec = {
-                "checkpoint": n, "prompt": prompt,
-                "tool_calls": [dataclasses.asdict(c) for c in res.tool_calls],
-                "reply": res.reply, "stop": res.stop, "steps": res.steps,
-                "model_calls": meter.calls - calls,
-                "cost_usd": meter.total - spent, "total_cost_usd": meter.total,
-                "sim_time_before": before["sim_time"], "sim_time_after": after["sim_time"],
-                "funds_before": before["funds_cents"], "funds_after": after["funds_cents"],
-                "wake_events": wake_events, "resume_error": resume_error,
-                "facts": wm.facts, "recalled_episodes": wm.episodes,
-            }
-            block = checkpoint_md(rec)
-            print(block)
-            with open(log, "a") as f:
-                f.write(block)
-            write_json(out / "checkpoints" / f"cp-{n:03d}.json", rec)
+                raw = run_command("yc-bench sim resume")
+                payload = _parse(raw.get("stdout") or "")
+                rec["resume"] = {"exit_code": raw.get("exit_code"), "payload": payload or raw.get("stdout"),
+                                 "stderr": raw.get("stderr")}
+                if payload.get("ok"):
+                    wake_events, resume_error, failed_resumes = payload.get("wake_events") or [], None, 0
+                    if payload.get("terminal_reason") in ("bankruptcy", "horizon_end"):
+                        stop = payload["terminal_reason"]
+                else:
+                    wake_events, failed_resumes = [], failed_resumes + 1
+                    resume_error = payload.get("error") or raw.get("stderr") or "sim resume failed"
+                    if failed_resumes >= STALL_LIMIT:
+                        stop = "stalled"
+                rec.update(wake_events=wake_events, resume_error=resume_error)
+            except BaseException as e:
+                rec["error"] = f"{type(e).__name__}: {e}"
+                raise
+            finally:
+                after = snapshot()
+                rec.update(tool_calls=list(calls), model_calls=meter.calls - made,
+                           cost_usd=meter.total - spent, total_cost_usd=meter.total,
+                           sim_time_after=after["sim_time"], funds_after=after["funds_cents"])
+                write_json(out / "checkpoints" / f"cp-{n:03d}.json", rec)
+                block = checkpoint_md(rec)
+                print(block)
+                with open(log, "a") as f:
+                    f.write(block)
+    except KeyboardInterrupt:
+        stop = "interrupted"
     except Exception as e:  # keep the partial run: the summary still gets written
         traceback.print_exc()
         stop = f"error: {type(e).__name__}: {e}"
-
-    with db() as s:
-        final = _snapshot_state(s, company_id)
-    summary = {
-        "seed": args.seed, "config": args.config, "model": model, "started_at": started_at,
-        "release": dataclasses.asdict(release),
-        "checkpoints": n, "terminal_reason": stop, "sim_time": final["sim_time"],
-        "final_funds_cents": final["funds_cents"], "total_cost_usd": round(meter.total, 4),
-        "model_calls": meter.calls, "facts": [f.fact for f in agent.store.facts(user_id)],
-        "time_series": extract_time_series(db, company_id),
-    }
-    write_json(out / "summary.json", summary)
-    with open(log, "a") as f:
-        f.write(summary_md(summary))
-    print(summary_md(summary) + f"\n{out}")
-    return 1 if stop.startswith("error") else 0
+    finally:
+        final = snapshot()
+        summary = {
+            "seed": args.seed, "config": args.config, "model": model, "started_at": started_at,
+            "release": dataclasses.asdict(release), **provenance(release),
+            "checkpoints": n, "terminal_reason": stop or "interrupted", "sim_time": final["sim_time"],
+            "final_funds_cents": final["funds_cents"], "total_cost_usd": round(meter.total, 4),
+            "model_calls": meter.calls, "facts": [f.fact for f in agent.store.facts(user_id)],
+            "time_series": extract_time_series(db, company_id),
+        }
+        write_json(out / "summary.json", summary)
+        with open(log, "a") as f:
+            f.write(summary_md(summary))
+        print(summary_md(summary) + f"\n{out}")
+    return 1 if summary["terminal_reason"].startswith(("error", "interrupted")) else 0
 
 
 if __name__ == "__main__":
