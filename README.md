@@ -6,14 +6,14 @@ A small agent with memory and no framework: an agent loop plus the four memories
 
 | Part | Where | Smallest working version chosen |
 |---|---|---|
-| System prompt | `prompts/system.v1.md` | Versioned file, picked by `prompt_version` in `release.json` |
+| System prompt | `prompts/system.v1.md` | Versioned file, picked by `prompt_version` (and `prompts_dir`) in `release.json` |
 | Current chat history | `memory.py` `EpisodicMemory.history` | Last `history_turns` messages of this chat, replayed as plain text |
 | User prompt → working memory / context RAM | `memory.py` `build_working_memory` | System prompt + matched skills + facts + past chats + history + prompt |
 | Procedural memory (Skill.md) | `skills/*.md`, `memory.py` `ProceduralMemory` | Frontmatter `triggers`; a skill loads only when the request matches one |
 | Semantic memory (vector store, durable facts) | `memory.py` `facts` table, `SemanticMemory` | Top-k by cosine, with a similarity floor so irrelevant facts stay out |
 | Episodic memory (SQL + vectors) | `memory.py` `episodes` table, `EpisodicMemory.recall` | SQL for the last N chats + vector top-k for relevant older messages |
 | Save the messages | `agent.py` `Agent.run` | Prompt and reply appended to `episodes` after every run |
-| Consolidate after N new chats → summarizer (cheaper model) → facts | `memory.py` `Consolidator` | Watermark per user; Haiku 5.5 extracts facts; a near-duplicate fact is replaced, not appended |
+| Consolidate after N new chats → summarizer (cheaper model) → facts | `memory.py` `Consolidator`, `prompts/summarizer.v1.md` | Watermark per user; Haiku 5.5 extracts facts; a near-duplicate fact is replaced, not appended |
 | LLM (Q&A agent) ↔ agentic tools | `agent.py`, `tools.py` | Manual tool loop on Claude Opus 5.5; tools run on an in-memory CRM/calendar/payments backend |
 | End-loop guardrails | `agent.py` | `max_steps`, `max_cost_usd`, `ask_user` (asks instead of guessing), approval gate on refunds over $500, refusal |
 

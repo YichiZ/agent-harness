@@ -302,13 +302,6 @@ def build_working_memory(release: Release, procedural: ProceduralMemory, semanti
 
 REPLACE_SIMILARITY = 0.6
 
-SUMMARIZER_SYSTEM = """You maintain long-term memory for an AI agent that works for one operator.
-From the conversation log, extract durable facts worth remembering in future conversations:
-the operator's preferences, standing instructions, recurring entities, and decisions.
-Skip one-off task details, anything already true of every operator, and anything the agent said that the operator did not confirm.
-Write each fact as one short, self-contained sentence. If a fact updates one in the existing list, write the updated version.
-Return an empty list when there is nothing durable."""
-
 FACTS_SCHEMA = {
     "type": "object",
     "properties": {"facts": {"type": "array", "items": {"type": "string"}}},
@@ -338,7 +331,7 @@ class Consolidator:
         known = "\n".join(f"- {f.fact}" for f in existing) or "(none)"
         prompt = f"Existing facts:\n{known}\n\nConversation log:\n{log}"
 
-        c = self.llm.complete(model=self.release.summarizer_model, system=SUMMARIZER_SYSTEM,
+        c = self.llm.complete(model=self.release.summarizer_model, system=self.release.summarizer_prompt(),
                               messages=[{"role": "user", "content": prompt}],
                               json_schema=FACTS_SCHEMA, max_tokens=4000)
         facts = [f.strip() for f in json.loads(c.text or '{"facts": []}').get("facts", []) if f.strip()]

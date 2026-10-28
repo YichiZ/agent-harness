@@ -39,13 +39,20 @@ class Release:
     episodic_top_k: int
     episodic_recent_k: int
     consolidate_every_n_chats: int
+    prompts_dir: str = "prompts"  # relative to the repo root
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Release":
         return cls(**json.loads((path or ROOT / "release.json").read_text()))
 
     def system_prompt(self) -> str:
-        return (ROOT / "prompts" / f"system.{self.prompt_version}.md").read_text()
+        return self._prompt("system")
+
+    def summarizer_prompt(self) -> str:
+        return self._prompt("summarizer")
+
+    def _prompt(self, kind: str) -> str:
+        return (ROOT / self.prompts_dir / f"{kind}.{self.prompt_version}.md").read_text()
 
 
 # ── model client: the loop only sees `LLM.complete`, so tests swap in a fake ──
@@ -161,12 +168,13 @@ class RunResult:
 
 class Agent:
     def __init__(self, release: Release, llm: LLM, store: Store, *, embedder: Embedder | None = None,
-                 backend: Backend | None = None, tools: list[Tool] | None = None, consolidate: bool = True):
+                 backend: Backend | None = None, tools: list[Tool] | None = None, consolidate: bool = True,
+                 procedural: ProceduralMemory | None = None):
         self.release, self.llm, self.store = release, llm, store
         self.embedder = embedder or HashingEmbedder()
         self.backend = backend or Backend()
         self.tools = {t.name: t for t in (tools or TOOLS)}
-        self.procedural = ProceduralMemory()
+        self.procedural = procedural or ProceduralMemory()
         self.semantic = SemanticMemory(store, self.embedder)
         self.episodic = EpisodicMemory(store, self.embedder)
         self.consolidator = Consolidator(release, llm, store, self.embedder) if consolidate else None

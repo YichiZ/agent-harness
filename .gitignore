@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 .env
 harness.db
+.claude/worktrees/
