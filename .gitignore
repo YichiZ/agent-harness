@@ -4,3 +4,5 @@ __pycache__/
 .env
 harness.db
 .claude/worktrees/
+bench/yc-bench/runs/
+bench/yc-bench/results/**/*.db

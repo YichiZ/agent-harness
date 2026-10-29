@@ -32,6 +32,22 @@ uv run python -m harness consolidate --user op-1 # run the summarizer now instea
 
 Example chat prompts: "Find complaints from the last 60 days that were never reimbursed and book follow-ups" (loop + skills), "Refund A-1004" (approval gate, $640), "Deal with the complaints" (should ask, not act).
 
+## Run on YC-Bench
+
+[YC-Bench](https://github.com/collinear-ai/yc-bench) puts the agent in charge of a simulated startup for a year: accept tasks from clients, assign employees, avoid bankruptcy. The runner seeds the world with YC-Bench's own code and gives the agent one tool, `run_command`, for its `yc-bench` CLI.
+
+```bash
+uv run python bench/yc-bench/run.py --fake --max-checkpoints 3                 # offline, scripted model, no API cost
+uv run python bench/yc-bench/run.py --seed 1 --max-checkpoints 10 --max-cost 5 # real model, short run
+uv run python bench/yc-bench/run.py --seed 1                                   # full horizon, capped at $30
+```
+
+Each checkpoint is one harness chat (`cp-001`, `cp-002`, ...) for the same user (`ycbench-seed<N>`). The prompt is the company state plus the events since the last checkpoint; the agent sets up work, then replies with a short note of what it did and learned. The runner then calls `yc-bench sim resume` to advance time, so the agent never does. Those notes are episodic memory, recalled at later checkpoints, and after every checkpoint the summarizer (`bench/yc-bench/prompts/summarizer.v1.md`) distills them into lasting facts about this company, such as which clients inflate their work and which employees are fast in which domain. That replaces YC-Bench's scratchpad. Settings are in `bench/yc-bench/release.json` (its `prompts_dir` points at `bench/yc-bench/prompts/`); each run writes to `bench/yc-bench/runs/<timestamp>-seed<N>/`: `run.md` (a readable log; `--render <run_dir>` rebuilds it), `checkpoints/cp-NNN.json` (prompt, every command and result, note, costs, the memory the agent saw), `system_prompt.md`, `summary.json`, and the `world.db` and `memory.db` databases. Logged runs are in [`bench/yc-bench/results/`](bench/yc-bench/results/). Known memory problems and planned fixes are in [`roadmap.md`](roadmap.md).
+
+The agent may run only the observe and act groups (`company`, `employee`, `market`, `task`, `client`, `finance`, `report`); `sim`, `scratchpad` and the run commands belong to the runner. Money in events is converted from cents to dollars before the agent sees it. A run stops at `--max-checkpoints`, at `--max-cost` (each checkpoint's own cap is the budget left), on bankruptcy or horizon end, or as `stalled` after 3 failed `sim resume` calls in a row.
+
+Known upstream quirk: YC-Bench's `business_hours_between` (in `yc_bench/core/business_time.py`, used for task progress) counts 09:00 to midnight on a weekday, 15 hours, when an interval crosses midnight, while deadlines are set with 9-hour days. Work therefore progresses faster than the 9-hour rule the agent is told to plan with, so its feasibility checks are conservative. The runner does not patch YC-Bench.
+
 ## Choices worth defending
 
 - **No framework.** The loop is about 100 lines, so every guardrail is visible and testable.

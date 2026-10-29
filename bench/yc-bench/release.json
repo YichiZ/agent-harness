@@ -1,0 +1,14 @@
+{
+  "prompt_version": "v1",
+  "agent_model": "claude-sonnet-5-5",
+  "agent_effort": "medium",
+  "summarizer_model": "claude-haiku-5-5",
+  "max_steps": 30,
+  "max_cost_usd": 2.0,
+  "history_turns": 10,
+  "semantic_top_k": 10,
+  "episodic_top_k": 5,
+  "episodic_recent_k": 3,
+  "consolidate_every_n_chats": 1,
+  "prompts_dir": "bench/yc-bench/prompts"
+}

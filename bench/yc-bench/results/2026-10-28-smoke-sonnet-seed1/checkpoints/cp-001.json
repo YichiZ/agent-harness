@@ -1,0 +1,537 @@
+{
+  "checkpoint": 1,
+  "prompt": [
+    "## Checkpoint 1",
+    "This is the start of the simulation. No time has passed yet.",
+    "- sim time: 2025-01-01T09:00:00",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $200,000.00",
+    "- monthly payroll: $38,005.03",
+    "- runway: ~5.3 months",
+    "- employees: 8",
+    "- active tasks: 0, planned tasks: 0"
+  ],
+  "tool_calls": [
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench market browse --limit 10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "total": 10,
+          "offset": 0,
+          "limit": 10,
+          "tasks": [
+            {
+              "task_id": "Task-10",
+              "client_name": "Vanguard ML",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 2091943,
+              "reward_prestige_delta": 0.11,
+              "skill_boost_pct": 0.1364,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 564.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-8",
+              "client_name": "Cortex Intelligence",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1853002,
+              "reward_prestige_delta": 0.255,
+              "skill_boost_pct": 0.0554,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 783.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-119",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1748808,
+              "reward_prestige_delta": 0.04,
+              "skill_boost_pct": 0.2037,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 860.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-183",
+              "client_name": "Prism Analytics",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1738037,
+              "reward_prestige_delta": 0.072,
+              "skill_boost_pct": 0.0819,
+              "requirements": [
+                {
+                  "domain": "data_environment",
+                  "required_qty": 1201.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-101",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1650178,
+              "reward_prestige_delta": 0.163,
+              "skill_boost_pct": 0.0901,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 919.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-49",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1647864,
+              "reward_prestige_delta": 0.118,
+              "skill_boost_pct": 0.2501,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 798.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-143",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1572736,
+              "reward_prestige_delta": 0.104,
+              "skill_boost_pct": 0.0917,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 877.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-31",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1565834,
+              "reward_prestige_delta": 0.157,
+              "skill_boost_pct": 0.1796,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 1236.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-163",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1565008,
+              "reward_prestige_delta": 0.077,
+              "skill_boost_pct": 0.0815,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1294.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-128",
+              "client_name": "Cortex Intelligence",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1522936,
+              "reward_prestige_delta": 0.033,
+              "skill_boost_pct": 0.1466,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 581.0
+                }
+              ]
+            }
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench employee list"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "count": 8,
+          "employees": [
+            {
+              "name": "Emp_1",
+              "tier": "junior",
+              "salary_cents": 397260,
+              "skill_rates": {
+                "data_environment": 3.35,
+                "inference": 1.24,
+                "research": 2.28,
+                "training": 3.02
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_2",
+              "tier": "junior",
+              "salary_cents": 314782,
+              "skill_rates": {
+                "data_environment": 3.06,
+                "inference": 3.94,
+                "research": 3.72,
+                "training": 2.89
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_3",
+              "tier": "junior",
+              "salary_cents": 236809,
+              "skill_rates": {
+                "data_environment": 2.96,
+                "inference": 2.41,
+                "research": 1.36,
+                "training": 2.32
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_4",
+              "tier": "mid",
+              "salary_cents": 757445,
+              "skill_rates": {
+                "data_environment": 4.16,
+                "inference": 5.85,
+                "research": 6.32,
+                "training": 4.2
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_5",
+              "tier": "junior",
+              "salary_cents": 259604,
+              "skill_rates": {
+                "data_environment": 1.25,
+                "inference": 2.49,
+                "research": 1.25,
+                "training": 3.59
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_6",
+              "tier": "mid",
+              "salary_cents": 776920,
+              "skill_rates": {
+                "data_environment": 6.67,
+                "inference": 4.37,
+                "research": 5.39,
+                "training": 5.99
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_7",
+              "tier": "mid",
+              "salary_cents": 664726,
+              "skill_rates": {
+                "data_environment": 6.13,
+                "inference": 5.63,
+                "research": 4.91,
+                "training": 5.18
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_8",
+              "tier": "junior",
+              "salary_cents": 392957,
+              "skill_rates": {
+                "data_environment": 2.84,
+                "inference": 3.54,
+                "research": 3.84,
+                "training": 3.92
+              },
+              "active_tasks": []
+            }
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task accept --task-id Task-10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "planned",
+          "accepted_at": "2025-01-01T09:00:00",
+          "deadline": "2025-01-09T18:00:00",
+          "replacement_task_id": "Task-9000"
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task accept --task-id Task-128"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-128",
+          "status": "planned",
+          "accepted_at": "2025-01-01T09:00:00",
+          "deadline": "2025-01-09T18:00:00",
+          "replacement_task_id": "Task-127000"
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task accept --task-id Task-183"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-183",
+          "status": "planned",
+          "accepted_at": "2025-01-01T09:00:00",
+          "deadline": "2025-01-10T18:00:00",
+          "replacement_task_id": "Task-182000"
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task assign --task-id Task-10 --employees Emp_4,Emp_2,Emp_8"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "planned",
+          "newly_assigned": [
+            "Emp_4",
+            "Emp_2",
+            "Emp_8"
+          ],
+          "total_assigned": [
+            "Emp_4",
+            "Emp_8",
+            "Emp_2"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task assign --task-id Task-128 --employees Emp_7,Emp_3,Emp_5"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-128",
+          "status": "planned",
+          "newly_assigned": [
+            "Emp_7",
+            "Emp_3",
+            "Emp_5"
+          ],
+          "total_assigned": [
+            "Emp_5",
+            "Emp_7",
+            "Emp_3"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task assign --task-id Task-183 --employees Emp_6,Emp_1"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-183",
+          "status": "planned",
+          "newly_assigned": [
+            "Emp_6",
+            "Emp_1"
+          ],
+          "total_assigned": [
+            "Emp_6",
+            "Emp_1"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task dispatch --task-id Task-10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "active",
+          "assignment_count": 3,
+          "assigned_employees": [
+            "Emp_4",
+            "Emp_8",
+            "Emp_2"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task dispatch --task-id Task-128"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-128",
+          "status": "active",
+          "assignment_count": 3,
+          "assigned_employees": [
+            "Emp_5",
+            "Emp_7",
+            "Emp_3"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task dispatch --task-id Task-183"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-183",
+          "status": "active",
+          "assignment_count": 2,
+          "assigned_employees": [
+            "Emp_6",
+            "Emp_1"
+          ]
+        },
+        "stderr": ""
+      },
+      "is_error": false
+    }
+  ],
+  "reply": [
+    "I accepted and started three tasks, each on its own team, so all eight employees are working.",
+    "",
+    "- **Task-10** (Vanguard ML, research): Emp_4, Emp_2 and Emp_8. Deadline is Jan 9.",
+    "- **Task-128** (Cortex Intelligence, inference): Emp_7, Emp_3 and Emp_5. Deadline is Jan 9.",
+    "- **Task-183** (Prism Analytics, data environment): Emp_6 and Emp_1. Deadline is Jan 10.",
+    "",
+    "**Employee strengths:** The mid-tier employees are the strongest. Emp_4 leads in research, Emp_6 in data environment, and Emp_7 in inference.",
+    "",
+    "**Risk:** I haven't checked whether the teams can finish by the deadlines. Task-183 is the most likely to miss, since its 1,201 units are only covered by two people.",
+    "",
+    "**Client reliability:** There is no history yet, so I can't say which clients are reliable."
+  ],
+  "stop": "done",
+  "steps": 5,
+  "model_calls": 5,
+  "cost_usd": 0.068516,
+  "total_cost_usd": 0.068516,
+  "sim_time_before": "2025-01-01T09:00:00",
+  "sim_time_after": "2025-01-09T10:07:03.314455",
+  "funds_before": 20000000,
+  "funds_after": 21522936,
+  "wake_events": [
+    {
+      "type": "task_completed",
+      "task_id": "6f264ff8-204e-4821-8cbb-f4d4df041af0",
+      "task_title": "Task-128",
+      "client_name": "Cortex Intelligence",
+      "success": true,
+      "funds_delta": 1522936,
+      "listed_reward": 1522936,
+      "trust_delta": 1.6,
+      "deadline_margin": "ahead by 8h",
+      "employees_assigned": 3,
+      "salary_bump_total_cents": 11741,
+      "bankrupt": false
+    }
+  ],
+  "resume_error": null,
+  "facts": [],
+  "recalled_episodes": 0
+}
