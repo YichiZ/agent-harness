@@ -1,0 +1,567 @@
+{
+  "checkpoint": 1,
+  "prompt": [
+    "## Checkpoint 1",
+    "This is the start of the simulation. No time has passed yet.",
+    "- sim time: 2025-01-01T09:00:00",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $200,000.00",
+    "- monthly payroll: $38,005.03",
+    "- runway: ~5.3 months",
+    "- employees: 8",
+    "- active tasks: 0, planned tasks: 0",
+    "",
+    "ACTION REQUIRED: no tasks are running, so payroll is being spent with no revenue. Accept a task, assign employees to it and dispatch it before you finish this checkpoint."
+  ],
+  "tool_calls": [
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench market browse --limit 10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "total": 10,
+          "offset": 0,
+          "limit": 10,
+          "tasks": [
+            {
+              "task_id": "Task-10",
+              "client_name": "Vanguard ML",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 2091943,
+              "reward_prestige_delta": 0.11,
+              "skill_boost_pct": 0.1364,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 564.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-8",
+              "client_name": "Cortex Intelligence",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1853002,
+              "reward_prestige_delta": 0.255,
+              "skill_boost_pct": 0.0554,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 783.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-119",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1748808,
+              "reward_prestige_delta": 0.04,
+              "skill_boost_pct": 0.2037,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 860.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-183",
+              "client_name": "Prism Analytics",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1738037,
+              "reward_prestige_delta": 0.072,
+              "skill_boost_pct": 0.0819,
+              "requirements": [
+                {
+                  "domain": "data_environment",
+                  "required_qty": 1201.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-101",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1650178,
+              "reward_prestige_delta": 0.163,
+              "skill_boost_pct": 0.0901,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 919.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-49",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1647864,
+              "reward_prestige_delta": 0.118,
+              "skill_boost_pct": 0.2501,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 798.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-143",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1572736,
+              "reward_prestige_delta": 0.104,
+              "skill_boost_pct": 0.0917,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 877.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-31",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1565834,
+              "reward_prestige_delta": 0.157,
+              "skill_boost_pct": 0.1796,
+              "requirements": [
+                {
+                  "domain": "research",
+                  "required_qty": 1236.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-163",
+              "client_name": "Helix Systems",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1565008,
+              "reward_prestige_delta": 0.077,
+              "skill_boost_pct": 0.0815,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1294.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-128",
+              "client_name": "Cortex Intelligence",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1522936,
+              "reward_prestige_delta": 0.033,
+              "skill_boost_pct": 0.1466,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 581.0
+                }
+              ]
+            }
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench employee list"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "count": 8,
+          "employees": [
+            {
+              "name": "Emp_1",
+              "tier": "junior",
+              "salary_cents": 397260,
+              "skill_rates": {
+                "data_environment": 3.35,
+                "inference": 1.24,
+                "research": 2.28,
+                "training": 3.02
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_2",
+              "tier": "junior",
+              "salary_cents": 314782,
+              "skill_rates": {
+                "data_environment": 3.06,
+                "inference": 3.94,
+                "research": 3.72,
+                "training": 2.89
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_3",
+              "tier": "junior",
+              "salary_cents": 236809,
+              "skill_rates": {
+                "data_environment": 2.96,
+                "inference": 2.41,
+                "research": 1.36,
+                "training": 2.32
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_4",
+              "tier": "mid",
+              "salary_cents": 757445,
+              "skill_rates": {
+                "data_environment": 4.16,
+                "inference": 5.85,
+                "research": 6.32,
+                "training": 4.2
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_5",
+              "tier": "junior",
+              "salary_cents": 259604,
+              "skill_rates": {
+                "data_environment": 1.25,
+                "inference": 2.49,
+                "research": 1.25,
+                "training": 3.59
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_6",
+              "tier": "mid",
+              "salary_cents": 776920,
+              "skill_rates": {
+                "data_environment": 6.67,
+                "inference": 4.37,
+                "research": 5.39,
+                "training": 5.99
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_7",
+              "tier": "mid",
+              "salary_cents": 664726,
+              "skill_rates": {
+                "data_environment": 6.13,
+                "inference": 5.63,
+                "research": 4.91,
+                "training": 5.18
+              },
+              "active_tasks": []
+            },
+            {
+              "name": "Emp_8",
+              "tier": "junior",
+              "salary_cents": 392957,
+              "skill_rates": {
+                "data_environment": 2.84,
+                "inference": 3.54,
+                "research": 3.84,
+                "training": 3.92
+              },
+              "active_tasks": []
+            }
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench client history"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "count": 6,
+          "client_history": [
+            {
+              "client_name": "Cortex Intelligence",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            },
+            {
+              "client_name": "Equinox Labs",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            },
+            {
+              "client_name": "Helix Systems",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            },
+            {
+              "client_name": "Prism Analytics",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            },
+            {
+              "client_name": "Stratos Cloud",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            },
+            {
+              "client_name": "Vanguard ML",
+              "trust_level": 0.0,
+              "tasks_succeeded": 0,
+              "tasks_failed": 0,
+              "failure_rate_pct": 0.0
+            }
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task accept --task-id Task-10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "planned",
+          "accepted_at": "2025-01-01T09:00:00",
+          "deadline": "2025-01-09T18:00:00",
+          "replacement_task_id": "Task-9000"
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task assign --task-id Task-10 --employees Emp_1,Emp_2,Emp_4,Emp_6,Emp_7,Emp_8"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "planned",
+          "newly_assigned": [
+            "Emp_1",
+            "Emp_2",
+            "Emp_4",
+            "Emp_6",
+            "Emp_7",
+            "Emp_8"
+          ],
+          "total_assigned": [
+            "Emp_6",
+            "Emp_7",
+            "Emp_4",
+            "Emp_8",
+            "Emp_1",
+            "Emp_2"
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task dispatch --task-id Task-10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-10",
+          "status": "active",
+          "assignment_count": 6,
+          "assigned_employees": [
+            "Emp_6",
+            "Emp_7",
+            "Emp_4",
+            "Emp_8",
+            "Emp_1",
+            "Emp_2"
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    }
+  ],
+  "sim_time_before": "2025-01-01T09:00:00",
+  "funds_before": 20000000,
+  "reply": [
+    "I accepted and dispatched one task, Task-10 (Vanguard ML, research, $20,919.43 reward). Emp_1, Emp_2, Emp_4, Emp_6, Emp_7 and Emp_8 are assigned to it. The deadline is 2025-01-09.",
+    "",
+    "- **Timing risk:** I didn't confirm the team can finish 564 units of research by the deadline. I assumed the combined rate is about 26.5 per day, which would take well over the 8 days available. It may fail, so the next checkpoint should check progress.",
+    "- **Idle staff:** Emp_3 and Emp_5 are idle and still draw payroll. I left them off so the other six wouldn't split their rates across tasks.",
+    "- **Employee strengths:** Emp_4, Emp_6 and Emp_7 are the strongest, at roughly 5–6 per day in most domains. Emp_6 is best at data_environment.",
+    "- **Clients:** No client history yet. All six clients start at zero trust and zero failures."
+  ],
+  "stop": "done",
+  "steps": 4,
+  "system": [
+    "You are the CEO of a startup in a business simulation. Maximize funds and prestige while avoiding bankruptcy.",
+    "",
+    "All actions use `yc-bench` CLI commands via `run_command`. All return JSON.",
+    "",
+    "## Each turn is one checkpoint",
+    "",
+    "Set up work for the period ahead:",
+    "1. Keep tasks running. Idle employees still draw payroll, so always have at least one task active (several concurrently when you can).",
+    "2. `yc-bench market browse` — pick a task. Before accepting, check with `task inspect` and `employee list` that your team can finish it before the deadline.",
+    "3. `yc-bench task accept --task-id Task-42` — accept it.",
+    "4. `yc-bench task assign --task-id Task-42 --employees Emp_1,Emp_4,Emp_7` — assign employees (check `employee list` for skill rates in the task's domains).",
+    "5. `yc-bench task dispatch --task-id Task-42` — start work.",
+    "6. Check `client history` for failure patterns.",
+    "",
+    "When done, stop calling tools and reply with a note of at most 5 lines: what you did and what you learned (client reliability, employee strengths, what worked). The runner then advances time to the next event. Do not try to advance time yourself.",
+    "",
+    "## Commands",
+    "",
+    "### Observe",
+    "- `yc-bench company status` — funds, prestige, payroll",
+    "- `yc-bench employee list` — employees with skill rates per domain",
+    "- `yc-bench market browse [--domain X] [--reward-min-cents N] [--limit N]` — available tasks",
+    "- `yc-bench task list [--status X]` — your tasks",
+    "- `yc-bench task inspect --task-id Task-42` — task details",
+    "- `yc-bench client list` — clients with trust levels",
+    "- `yc-bench client history` — per-client success/failure rates",
+    "- `yc-bench finance ledger` — financial history",
+    "",
+    "### Act",
+    "- `yc-bench task accept --task-id Task-42` — accept from market",
+    "- `yc-bench task assign --task-id Task-42 --employees Emp_1,Emp_4,Emp_7` — assign employees (comma-separated)",
+    "- `yc-bench task dispatch --task-id Task-42` — start work (must assign first)",
+    "- `yc-bench task cancel --task-id Task-42 --reason \"text\"` — cancel a task",
+    "",
+    "## Money",
+    "",
+    "Every money field in command output is in US cents: `reward_funds_cents: 1693252` is $16,932.52. Divide by 100 before you write a dollar amount. The checkpoint header and the event lines are already in dollars.",
+    "",
+    "## Key mechanics",
+    "",
+    "- Throughput split: an employee on N active tasks splits their rate N ways (rate/N).",
+    "- Deadlines: success before the deadline earns the reward and prestige. Failure means a prestige penalty and no reward.",
+    "- Salary bumps: completed tasks raise the salary of every assigned employee. More employees assigned means faster payroll growth.",
+    "- Trust: completing tasks for a client builds trust, which means less work per task and access to gated tasks. Working for one client erodes trust with the others.",
+    "- `task cancel` carries a prestige penalty.",
+    "",
+    "## Clients",
+    "",
+    "Not all clients are reliable. Check `yc-bench client history` for failure patterns.",
+    "",
+    "## Other mechanics",
+    "",
+    "- Payroll is deducted monthly. Funds below zero means bankruptcy.",
+    "- Prestige grows per domain. Higher prestige unlocks better-paying tasks.",
+    "",
+    "Sections below come from your memory of earlier checkpoints; treat them as your own notes."
+  ],
+  "facts": [],
+  "recalled_episodes": [],
+  "resume": {
+    "exit_code": 0,
+    "payload": {
+      "ok": true,
+      "old_sim_time": "2025-01-17T11:13:55.712087",
+      "new_sim_time": "2025-01-17T11:13:55.712087",
+      "checkpoint_event_type": "task_completed",
+      "events_processed": 1,
+      "payrolls_applied": 0,
+      "balance_delta": -732180,
+      "wake_events": [
+        {
+          "type": "task_completed",
+          "task_id": "adbc1973-831c-4a92-90e8-02cd9a186dd9",
+          "task_title": "Task-10",
+          "client_name": "Vanguard ML",
+          "success": false,
+          "funds_delta": -732180,
+          "listed_reward": 2091943,
+          "trust_delta": 0.0,
+          "deadline_margin": "late by 185h",
+          "employees_assigned": 6,
+          "salary_bump_total_cents": 0,
+          "bankrupt": false
+        }
+      ],
+      "bankrupt": false,
+      "horizon_reached": false,
+      "terminal_reason": null
+    },
+    "stderr": ""
+  },
+  "wake_events": [
+    {
+      "type": "task_completed",
+      "task_id": "adbc1973-831c-4a92-90e8-02cd9a186dd9",
+      "task_title": "Task-10",
+      "client_name": "Vanguard ML",
+      "success": false,
+      "funds_delta": -732180,
+      "listed_reward": 2091943,
+      "trust_delta": 0.0,
+      "deadline_margin": "late by 185h",
+      "employees_assigned": 6,
+      "salary_bump_total_cents": 0,
+      "bankrupt": false
+    }
+  ],
+  "resume_error": null,
+  "model_calls": 5,
+  "cost_usd": 0.051204799999999995,
+  "total_cost_usd": 0.051204799999999995,
+  "sim_time_after": "2025-01-17T11:13:55.712087",
+  "funds_after": 19267820
+}
