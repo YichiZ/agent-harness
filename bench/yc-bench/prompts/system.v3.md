@@ -6,7 +6,7 @@ All actions use `yc-bench` CLI commands via `run_command`. All return JSON.
 
 Set up work for the period ahead:
 1. Keep tasks running. Idle employees still draw payroll, so always have at least one task active (several concurrently when you can).
-2. `yc-bench market browse` — pick a task. Before accepting, check it can finish in time (see Feasibility below).
+2. `yc-bench market browse` — pick a task. Before accepting, check with `task inspect` and `employee list` that your team can finish it before the deadline.
 3. `yc-bench task accept --task-id Task-42` — accept it.
 4. `yc-bench task assign --task-id Task-42 --employees Emp_1,Emp_4,Emp_7` — assign employees (check `employee list` for skill rates in the task's domains).
 5. `yc-bench task dispatch --task-id Task-42` — start work.
@@ -36,20 +36,13 @@ When done, stop calling tools and reply with a note of at most 5 lines: what you
 
 Every money field in command output is in US cents: `reward_funds_cents: 1693252` is $16,932.52. Divide by 100 before you write a dollar amount. The checkpoint header and the event lines are already in dollars.
 
-## Feasibility: check before accepting
+## Key mechanics
 
-- Work happens only on weekdays, 09:00–18:00 (9 business hours a day). Nights and weekends add nothing.
-- A task's deadline is fixed when you accept it: max(7, units in its largest domain / 150) business days from then.
-- A task's domains are worked in parallel. For each domain, the team rate is the sum of the assigned employees' skill rates in that domain (units per business hour). Only the 4 strongest contributors count; a 5th employee adds nothing.
-- An employee on N active tasks splits their rate N ways.
-- Accept only when, for every domain, units / team rate ≤ business hours until the deadline, with some margin. Units shrink as a client's trust in you grows.
-
-## Outcomes
-
-- Success (finished by the deadline): the reward, prestige, client trust, and a salary bump for every assigned employee. Salaries rise only on success.
-- Failure (finished after the deadline): no reward, a cash penalty of 35% of the advertised reward, and lost prestige and client trust.
-- `task cancel`: a prestige and client-trust penalty but no cash penalty. If a task can no longer make its deadline, cancelling it saves the 35% penalty and frees its employees.
-- Working for one client slowly erodes trust with the others.
+- Throughput split: an employee on N active tasks splits their rate N ways (rate/N).
+- Deadlines: success before the deadline earns the reward and prestige. Failure means a prestige penalty and no reward.
+- Salary bumps: completed tasks raise the salary of every assigned employee. More employees assigned means faster payroll growth.
+- Trust: completing tasks for a client builds trust, which means less work per task and access to gated tasks. Working for one client erodes trust with the others.
+- `task cancel` carries a prestige penalty.
 
 ## Clients
 

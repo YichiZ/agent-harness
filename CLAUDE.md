@@ -16,6 +16,7 @@ For ethical reasons (no benchmaxxing) and to keep results comparable with the pu
 
 - No descriptions of hidden mechanics, e.g. how unreliable clients behave. Stock agents get only "Not all clients are reliable. Check `client history` for failure patterns."
 - No real client names from the simulator (`_CLIENT_NAME_POOL` in `yc_bench/services/generate_clients.py`), not even in examples.
+- No numeric mechanics the stock prompt doesn't state, e.g. the deadline formula, working hours, how many employees count toward a task, or the failure penalty. Stock-stated facts (salary bumps, rate/N throughput split, deadline success/failure, trust, monthly payroll) may stay in stock-equivalent wording.
 - No seed-specific rules. Every seed shares one world (`_FIXED_WORLD_SEED = 1`), so tuning on any seed is tuning on the test set.
 
 Past results cite their prompt files by version, so change prompts by adding a new version (`*.vN.md`) and bumping `prompt_version` in `bench/yc-bench/release.json`, never by editing an old one. `tests/test_ycbench.py` checks the current version for client names and leak phrases.

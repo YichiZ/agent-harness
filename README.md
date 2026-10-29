@@ -46,7 +46,7 @@ Each checkpoint is one harness chat (`cp-001`, `cp-002`, ...) for the same user 
 
 The agent may run only the observe and act groups (`company`, `employee`, `market`, `task`, `client`, `finance`, `report`); `sim`, `scratchpad` and the run commands belong to the runner. Money in events is converted from cents to dollars before the agent sees it. A run stops at `--max-checkpoints`, at `--max-cost` (each checkpoint's own cap is the budget left), on bankruptcy or horizon end, or as `stalled` after 3 failed `sim resume` calls in a row.
 
-Known upstream quirk: YC-Bench's `business_hours_between` (in `yc_bench/core/business_time.py`, used for task progress) counts 09:00 to midnight on a weekday, 15 hours, when an interval crosses midnight, while deadlines are set with 9-hour days. Work therefore progresses faster than the 9-hour rule the agent is told to plan with, so its feasibility checks are conservative. The runner does not patch YC-Bench.
+Known upstream quirk: YC-Bench's `business_hours_between` (in `yc_bench/core/business_time.py`, used for task progress) counts 09:00 to midnight on a weekday, 15 hours, when an interval crosses midnight, while deadlines are set with 9-hour days. Work therefore progresses faster than 9-hour days would suggest. Prompts v1 and v2 told the agent to plan with 9-hour days; v3 does not, since the stock prompt doesn't. The runner does not patch YC-Bench.
 
 ## Choices worth defending
 

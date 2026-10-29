@@ -96,5 +96,7 @@ def test_current_prompts_do_not_leak_simulator_secrets():
     for p in prompts:
         text = p.read_text().lower()
         leaks = [n for n in _CLIENT_NAME_POOL if n.lower() in text]
-        leaks += [w for w in ("inflat", "scope creep", "adversar", "after you accept", "after accept") if w in text]
+        leaks += [w for w in ("inflat", "scope creep", "adversar", "after you accept", "after accept",
+                              "35%", "strongest", "max(7", "/ 150", "09:00", "business hours a day",
+                              "only on success", "no cash penalty") if w in text]
         assert not leaks, f"{p.name} leaks {leaks}"
