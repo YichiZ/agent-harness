@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -10,6 +11,10 @@ SCRIPT = Path(__file__).resolve().parent.parent / "bench" / "yc-bench" / "run.py
 _spec = importlib.util.spec_from_file_location("ycbench_runner", SCRIPT)
 runner = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(runner)
+
+
+def release_version() -> str:
+    return json.loads((SCRIPT.parent / "release.json").read_text())["prompt_version"]
 
 
 @pytest.mark.parametrize("command", [
@@ -74,7 +79,7 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     assert "Your note from the last checkpoint" in "\n".join(rows[1]["prompt"])
     summary = json.loads((tmp_path / "summary.json").read_text())
     assert summary["checkpoints"] == 3 and summary["total_cost_usd"] == 0
-    assert summary["yc_bench_commit"] and "summarizer.v3.md" in summary["prompt_sha256"]
+    assert summary["yc_bench_commit"] and {f"{k}.{release_version()}.md" for k in ("system", "summarizer", "checkpoint")} <= set(summary["prompt_sha256"])
     assert isinstance(summary["git_dirty"], bool)
     assert summary["runner_sha256"] == hashlib.sha256(SCRIPT.read_bytes()).hexdigest()
     assert "\\n" not in (tmp_path / "checkpoints" / "cp-001.json").read_text()  # multi-line text is a list of lines
@@ -86,17 +91,36 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     assert (tmp_path / "run.md").read_text().count("## Checkpoint") == 3
 
 
-def test_current_prompts_do_not_leak_simulator_secrets():
-    """Fairness: stock YC-Bench agents get neither real client names nor how unreliable clients behave."""
+LEAK_PATTERNS = [  # hidden mechanics stock YC-Bench agents aren't told, in any wording
+    r"inflat", r"scope creep", r"adversar", r"after (you )?accept", r"\brat client",
+    r"\b35 ?(%|percent)", r"thirty-five", r"/ ?150\b", r"\b150 units",
+    r"strongest", r"\b(top|best) ?(4|four)\b", r"(4|four) (best|strongest)",
+    r"per (business )?hour", r"units per hour", r"business hours? a day",
+    r"\b0?9:00\b", r"\b9 ?am\b", r"\b6 ?pm\b", r"\b18:00\b", r"max\(7",
+    r"only on success", r"no cash penalty",
+]
+
+
+def leaks_in(text: str) -> list[str]:
     from yc_bench.services.generate_clients import _CLIENT_NAME_POOL
 
+    text = " ".join(text.lower().split())
+    return ([n for n in _CLIENT_NAME_POOL if n.lower() in text]
+            + [p for p in LEAK_PATTERNS if re.search(p, text)])
+
+
+def test_leak_check_catches_rewordings():
+    for leak in ("a 35 % penalty", "only the top 4 count", "rates are units per hour",
+                 "work 9am to 6pm", "max(7, units/150)", "Vanguard ML failed"):
+        assert leaks_in(leak), leak
+    assert not leaks_in("Acme Widgets: Task-3 failed, late by 40 hours.")
+
+
+def test_current_prompts_do_not_leak_simulator_secrets():
+    """Fairness: stock YC-Bench agents get neither real client names nor hidden mechanics."""
     release = json.loads((SCRIPT.parent / "release.json").read_text())
-    prompts = sorted((SCRIPT.parent / "prompts").glob(f"*.{release['prompt_version']}.md"))
-    assert prompts
-    for p in prompts:
-        text = p.read_text().lower()
-        leaks = [n for n in _CLIENT_NAME_POOL if n.lower() in text]
-        leaks += [w for w in ("inflat", "scope creep", "adversar", "after you accept", "after accept",
-                              "35%", "strongest", "max(7", "/ 150", "09:00", "business hours a day",
-                              "only on success", "no cash penalty") if w in text]
-        assert not leaks, f"{p.name} leaks {leaks}"
+    prompts_dir = SCRIPT.parent.parent.parent / release["prompts_dir"]
+    files = [prompts_dir / f"{kind}.{release['prompt_version']}.md" for kind in ("system", "summarizer", "checkpoint")]
+    for f in files + [SCRIPT]:
+        assert f.exists(), f
+        assert not leaks_in(f.read_text()), f"{f.name} leaks {leaks_in(f.read_text())}"
