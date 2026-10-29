@@ -74,7 +74,7 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     assert "Your note from the last checkpoint" in "\n".join(rows[1]["prompt"])
     summary = json.loads((tmp_path / "summary.json").read_text())
     assert summary["checkpoints"] == 3 and summary["total_cost_usd"] == 0
-    assert summary["yc_bench_commit"] and "summarizer.v2.md" in summary["prompt_sha256"]
+    assert summary["yc_bench_commit"] and "summarizer.v1.md" in summary["prompt_sha256"]
     assert isinstance(summary["git_dirty"], bool)
     assert summary["runner_sha256"] == hashlib.sha256(SCRIPT.read_bytes()).hexdigest()
     assert "\\n" not in (tmp_path / "checkpoints" / "cp-001.json").read_text()  # multi-line text is a list of lines
