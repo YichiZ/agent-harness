@@ -1,4 +1,5 @@
 """The YC-Bench runner: command policy, money conversion, and an end-to-end run with the scripted model."""
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -46,6 +47,14 @@ def test_event_money_is_shown_in_dollars():
     assert '"salary_bump_total_usd": 117.41' in line and '"employees_assigned": 2' in line
 
 
+@pytest.mark.parametrize("reason, code", [
+    ("max_checkpoints", 0), ("max_cost", 0), ("horizon_end", 0), ("bankruptcy", 0),
+    ("stalled", 1), ("interrupted", 1), ("error: RuntimeError: boom", 1),
+])
+def test_exit_code_fails_runs_that_did_not_end_on_their_own_terms(reason, code):
+    assert runner.exit_code(reason) == code
+
+
 def test_non_empty_out_folder_is_refused(tmp_path):
     (tmp_path / "old.txt").write_text("earlier run")
     with pytest.raises(SystemExit):
@@ -65,7 +74,9 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     assert "Your note from the last checkpoint" in "\n".join(rows[1]["prompt"])
     summary = json.loads((tmp_path / "summary.json").read_text())
     assert summary["checkpoints"] == 3 and summary["total_cost_usd"] == 0
-    assert summary["yc_bench_commit"] and "system.v1.md" in summary["prompt_sha256"]
+    assert summary["yc_bench_commit"] and "summarizer.v2.md" in summary["prompt_sha256"]
+    assert isinstance(summary["git_dirty"], bool)
+    assert summary["runner_sha256"] == hashlib.sha256(SCRIPT.read_bytes()).hexdigest()
     assert "\\n" not in (tmp_path / "checkpoints" / "cp-001.json").read_text()  # multi-line text is a list of lines
     log = (tmp_path / "run.md").read_text()
     assert log.count("## Checkpoint") == 3 and "## Summary" in log

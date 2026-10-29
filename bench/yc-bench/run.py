@@ -326,16 +326,23 @@ def _sha256(path: Path) -> str:
 
 
 def provenance(release: Release) -> dict:
-    """What produced this run: repo commit, YC-Bench pin, prompt hashes."""
+    """What produced this run: repo commit, YC-Bench pin, runner and prompt hashes. Taken before the run writes files."""
     git = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True)
+    status = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True)
     try:
         pin = json.loads(metadata.distribution("yc-bench").read_text("direct_url.json") or "{}")
         yc_bench = pin.get("vcs_info", {}).get("commit_id") or pin.get("url")
     except metadata.PackageNotFoundError:
         yc_bench = None
     prompts = ROOT / release.prompts_dir
-    return {"git_sha": git.stdout.strip() or None, "yc_bench_commit": yc_bench,
+    return {"git_sha": git.stdout.strip() or None, "git_dirty": bool(status.stdout.strip()),
+            "runner_sha256": _sha256(Path(__file__)), "yc_bench_commit": yc_bench,
             "prompt_sha256": {p.name: _sha256(p) for p in sorted(prompts.glob(f"*.{release.prompt_version}.md"))}}
+
+
+def exit_code(terminal_reason: str) -> int:
+    """1 when the run did not end on its own terms (crash, Ctrl-C, time stuck), else 0."""
+    return 1 if terminal_reason.startswith(("error", "interrupted", "stalled")) else 0
 
 
 def load_release(args: argparse.Namespace) -> Release:
@@ -358,6 +365,7 @@ def main(argv: list[str] | None = None) -> int:
     out = (args.out or HERE / "runs" / f"{datetime.now():%Y%m%d-%H%M%S}-seed{args.seed}").resolve()
     if out.exists() and any(out.iterdir()):
         sys.exit(f"{out} is not empty; pick a new --out so an earlier run is not mixed in")
+    origin = provenance(release)
     out.mkdir(parents=True, exist_ok=True)
     # Set before importing yc_bench: the CLI subprocesses read these too.
     os.environ["DATABASE_URL"] = f"sqlite:///{out / 'world.db'}"
@@ -463,7 +471,7 @@ def main(argv: list[str] | None = None) -> int:
         final = snapshot()
         summary = {
             "seed": args.seed, "config": args.config, "model": model, "started_at": started_at,
-            "release": dataclasses.asdict(release), **provenance(release),
+            "release": dataclasses.asdict(release), **origin,
             "checkpoints": n, "terminal_reason": stop or "interrupted", "sim_time": final["sim_time"],
             "final_funds_cents": final["funds_cents"], "total_cost_usd": round(meter.total, 4),
             "model_calls": meter.calls, "facts": [f.fact for f in agent.store.facts(user_id)],
@@ -473,7 +481,7 @@ def main(argv: list[str] | None = None) -> int:
         with open(log, "a") as f:
             f.write(summary_md(summary))
         print(summary_md(summary) + f"\n{out}")
-    return 1 if summary["terminal_reason"].startswith(("error", "interrupted")) else 0
+    return exit_code(summary["terminal_reason"])
 
 
 if __name__ == "__main__":

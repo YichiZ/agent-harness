@@ -2,16 +2,18 @@
 
 ## Stale memory
 
-Found in the YC-Bench smoke runs (`bench/yc-bench/results/2026-10-28-smoke-sonnet-seed1-v2/`): at the end of 10 checkpoints, 12 of the 25 semantic facts were out of date. Examples: "Currently: Task-10 (Vanguard ML) is in progress" long after it failed, "Vanguard ML has no track record yet" after its task failed, and "Helix Systems has no track record yet" next to "Helix Systems is a reliable client".
+**Problem.** In the v2 YC-Bench smoke run of 2026-10-28 ([`bench/yc-bench/results/2026-10-28-smoke-sonnet-seed1-v2/`](bench/yc-bench/results/2026-10-28-smoke-sonnet-seed1-v2/)), 25 facts were stored at the end. 11 were "Currently:" snapshots, and all 11 were stale, such as "Currently: Task-10 (Vanguard ML) is in progress" long after it failed. Some facts contradicted others ("Helix Systems has no track record yet" next to "Helix Systems is a reliable client"), and Vanguard ML was still recorded as having "no track record" after its task failed. At checkpoint 10, 8 of the 10 facts retrieved for the agent were stale, and none of the useful client facts were retrieved.
 
-**Cause.** `Consolidator.run` replaces an existing fact only when the new one scores at least `REPLACE_SIMILARITY` (0.6) against it with the hashing embedder. A reworded update ("Helix Systems is reliable" vs "Helix Systems has no track record") rarely reaches that, so it is appended and the old fact stays. The YC-Bench summarizer prompt asks for "Currently:" on current-state facts so they can be replaced, but nothing replaces them.
+**Cause.** `Consolidator` replaces an existing fact only when the new one's cosine similarity under the hashing embedder is at least 0.6 (`REPLACE_SIMILARITY`); a reworded update is appended and the old fact stays. Nothing expires, caps or drops stale facts. Retrieval ranks facts by similarity to the checkpoint prompt, which is a dump of state, so state-like facts win over lessons.
 
-**Changes, smallest first:**
+**Done now.** The YC-Bench summarizer prompt v2 (`bench/yc-bench/prompts/summarizer.v2.md`) no longer stores current state, "no track record" facts or dollar figures, records failures and inflation under the client's name, and restates a corrected fact in the same wording so it replaces the old one.
 
-1. **No current-state facts (prompt only).** Tell the YC-Bench summarizer not to store current state at all: each checkpoint prompt already shows funds, payroll, tasks and the previous note. Removes most of the stale facts.
-2. **Drop "Currently:" facts on each consolidation (harness).** In `Consolidator.run`, delete the user's facts that start with "Currently:" before adding the new ones, so only the latest snapshot survives.
-3. **Let the summarizer update and delete by id (harness).** Show existing facts with ids and change the output schema to `{"add": [...], "update": [{"id", "fact"}], "delete": [ids]}`, so a contradicted fact is replaced or removed by the model instead of by a similarity threshold.
-4. **Real embeddings (harness).** Swap `HashingEmbedder` for an embedding model behind `Embedder`, so near-duplicates and rewordings are recognised; retune `REPLACE_SIMILARITY` and `MIN_SIMILARITY`.
-5. **Measure it.** Add a check to the YC-Bench summary: number of facts, how many contradict the world (for example a client called reliable that `time_series.clients` marks `is_rat`), and how many repeat an entity. Compare before and after each change.
+**Planned harness changes, not yet built:**
 
-Related, not memory: the agent never re-checked Vanguard ML's task size after accepting it, so the inflated task failed instead of being cancelled. A checkpoint-prompt line listing each active task's units now vs at accept would surface inflation without relying on memory.
+- (a) Expire state facts: replace all "Currently:"/state facts on each consolidation, or give them a TTL.
+- (b) Detect contradictions: when a new fact is about the same entity (for example a client name), have the summarizer decide whether it replaces the old fact, instead of relying on the similarity threshold.
+- (c) Use a better embedder than hashing, or match facts by an entity key.
+- (d) Cap the number of facts and prune by usefulness or recency.
+- (e) Split retrieval so durable lessons are not crowded out by similarity to the state dump.
+- (f) Do not inject the previous note twice, once as its own block and again through recalled episodes; keep the recalled-episodes section small.
+- (g) Count the summarizer's cost against the per-checkpoint cost cap.
