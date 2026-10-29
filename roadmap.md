@@ -6,9 +6,10 @@
 
 **Cause.** `Consolidator` replaces an existing fact only when the new one's cosine similarity under the hashing embedder is at least 0.6 (`REPLACE_SIMILARITY`); a reworded update is appended and the old fact stays. Nothing expires, caps or drops stale facts. Retrieval ranks facts by similarity to the checkpoint prompt, which is a dump of state, so state-like facts win over lessons.
 
-**Planned changes, not yet built:**
+**Done now.** The YC-Bench summarizer prompt v2 (`bench/yc-bench/prompts/summarizer.v2.md`) no longer stores current state, "no track record" facts or dollar figures, records failures and inflation under the client's name, and restates a corrected fact in the same wording so it replaces the old one.
 
-- YC-Bench summarizer stops storing current state (prompt only).
+**Planned harness changes, not yet built:**
+
 - (a) Expire state facts: replace all "Currently:"/state facts on each consolidation, or give them a TTL.
 - (b) Detect contradictions: when a new fact is about the same entity (for example a client name), have the summarizer decide whether it replaces the old fact, instead of relying on the similarity threshold.
 - (c) Use a better embedder than hashing, or match facts by an entity key.
