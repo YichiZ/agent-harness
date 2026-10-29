@@ -1,0 +1,1278 @@
+{
+  "seed": 1,
+  "config": "default",
+  "model": "claude-opus-5-5",
+  "started_at": "2026-10-28 23:14:57",
+  "release": {
+    "prompt_version": "v4",
+    "agent_model": "claude-opus-5-5",
+    "agent_effort": "medium",
+    "summarizer_model": "claude-haiku-5-5",
+    "max_steps": 30,
+    "max_cost_usd": 2.0,
+    "history_turns": 10,
+    "semantic_top_k": 10,
+    "episodic_top_k": 5,
+    "episodic_recent_k": 3,
+    "consolidate_every_n_chats": 1,
+    "prompts_dir": "bench/yc-bench/prompts"
+  },
+  "git_sha": "fdb66d5e308db7f3e293030eb991282cb1ec093d",
+  "git_dirty": false,
+  "runner_sha256": "e3ef02ca02a91b7a13b3a938c56154a204d07b791ff0c1009d99208ce48c4491",
+  "yc_bench_commit": "97ca2b809ea6fee92e3e5cc6240f5b0186221c51",
+  "prompt_sha256": {
+    "checkpoint.v4.md": "c0bbc8e76ccfb04a57c1a92cf112b261ca4debdeb26a2a27bc035a88f1031956",
+    "summarizer.v4.md": "b9b2528858f0dffbefd2bc8b46d5d7749c274faa9e55182179ab1286427d024a",
+    "system.v4.md": "952ac06fea4df91dd142006b4575be1bfb61e4dc7208f0eca6aa927ad5ab8835"
+  },
+  "checkpoints": 10,
+  "terminal_reason": "max_checkpoints",
+  "sim_time": "2025-02-04T11:26:21.885783",
+  "final_funds_cents": 38969690,
+  "total_cost_usd": 3.0908,
+  "model_calls": 71,
+  "facts": [
+    "Stratos Cloud: Task-84 completed 80 hours ahead of its deadline and paid in full, with a team of 2 employees.",
+    "Helix Systems: work amount came in lower after acceptance on Task-25, Task-31, Task-133, Task-163 and Task-145, with cuts of roughly 37% to 40% each time, so the work amount should be checked right after accepting.",
+    "Rule: client trust: Helix Systems trust grows with each on-time completion, and trust 3 is needed for Helix inference tasks.",
+    "Throughput: 3 employees finished Task-25 (research) 168 hours ahead of its deadline.",
+    "Helix Systems: Task-31 completed 53 hours ahead of its deadline and paid in full, after its work amount dropped from 1236 to 935 units.",
+    "Throughput: a team of 2 employees finished Task-18 (657 units) 72 hours ahead of its deadline.",
+    "Stratos Cloud: Task-18 completed 72 hours ahead of its deadline and paid in full, giving two on-time completions.",
+    "Stratos Cloud: work amount came in lower than listed after acceptance on Task-18 (861 to 657 units).",
+    "Cortex Intelligence: work amount came in lower than listed after acceptance on a recent task (851 to 646 units).",
+    "Throughput: teams of 3 employees finished tasks 23 to 95 hours ahead of their deadlines across Task-8, Task-183 and Task-1.",
+    "Rule: work inspection: check the actual work amount immediately after accepting a task, since some clients inflate it after acceptance.",
+    "Rule: cancellation penalty: cancelling an accepted task lowered prestige in that domain by about 0.05 to 0.17, and prestige does not drop below 1.",
+    "Equinox: work grew to about 4x the listed amount after acceptance (Task-191), so the task was cancelled right after accepting.",
+    "Vanguard ML: work grew to about 4x the listed amount after acceptance (Task-10), so the task was cancelled unfinished at 35% done.",
+    "Rule: deadline visibility: a task's deadline is only shown after the task is accepted, so work hours must be checked against the deadline before committing."
+  ],
+  "time_series": {
+    "funds": [
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "funds_cents": 20000000,
+        "event": "start"
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "funds_cents": 21522936,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "funds_cents": 22939104,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "funds_cents": 24792106,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "funds_cents": 26530143,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "funds_cents": 27885211,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "funds_cents": 29578463,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "funds_cents": 31226327,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "funds_cents": 32349049,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "funds_cents": 33904274,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "funds_cents": 35301244,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-29T13:05:55.447734",
+        "funds_cents": 36867078,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-30T15:33:06.611374",
+        "funds_cents": 38289099,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-01-30T17:07:46.991249",
+        "funds_cents": 39526882,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 39117622,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 38784840,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 38533031,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 37747586,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 37472982,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 36668062,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 35968336,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 35563379,
+        "event": "monthly_payroll"
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "funds_cents": 36811711,
+        "event": "task_reward"
+      },
+      {
+        "time": "2025-02-04T11:26:21.885783",
+        "funds_cents": 38969690,
+        "event": "task_reward"
+      }
+    ],
+    "prestige": [
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "data_environment",
+        "level": 1.0
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "inference",
+        "level": 1.0
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "research",
+        "level": 1.0
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "training",
+        "level": 1.0
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "inference",
+        "level": 1.033
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "domain": "data_environment",
+        "level": 1.22
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "domain": "inference",
+        "level": 1.288
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "domain": "research",
+        "level": 1.255
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "domain": "data_environment",
+        "level": 1.292
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "domain": "research",
+        "level": 1.373
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "domain": "inference",
+        "level": 1.337
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "domain": "data_environment",
+        "level": 1.386
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "domain": "data_environment",
+        "level": 1.502
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "domain": "inference",
+        "level": 1.547
+      },
+      {
+        "time": "2025-01-29T13:05:55.447734",
+        "domain": "research",
+        "level": 1.53
+      },
+      {
+        "time": "2025-01-30T15:33:06.611374",
+        "domain": "inference",
+        "level": 1.658
+      },
+      {
+        "time": "2025-01-30T17:07:46.991249",
+        "domain": "research",
+        "level": 1.665
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "domain": "data_environment",
+        "level": 1.522
+      },
+      {
+        "time": "2025-02-04T11:26:21.885783",
+        "domain": "inference",
+        "level": 1.673
+      }
+    ],
+    "tasks": [
+      {
+        "task_id": "9310eba3-0f7a-4f34-9b85-9ea84eaaa4c5",
+        "title": "Task-10",
+        "client_name": "Vanguard ML",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 2091943,
+        "advertised_reward_cents": 2091943,
+        "reward_prestige_delta": 0.11,
+        "status": "cancelled",
+        "accepted_at": "2025-01-01T09:00:00",
+        "deadline": "2025-01-09T18:00:00",
+        "completed_at": null,
+        "domains": [
+          "research"
+        ],
+        "success": null
+      },
+      {
+        "task_id": "cc623b33-a741-4cd8-92b3-5a2ca6d1984c",
+        "title": "Task-128",
+        "client_name": "Cortex Intelligence",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1522936,
+        "advertised_reward_cents": 1522936,
+        "reward_prestige_delta": 0.033,
+        "status": "completed_success",
+        "accepted_at": "2025-01-01T09:00:00",
+        "deadline": "2025-01-09T18:00:00",
+        "completed_at": "2025-01-08T12:09:26.709215",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "b395a08e-144d-4387-9a97-f50d0fe2c988",
+        "title": "Task-162",
+        "client_name": "Stratos Cloud",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1416168,
+        "advertised_reward_cents": 1416168,
+        "reward_prestige_delta": 0.22,
+        "status": "completed_success",
+        "accepted_at": "2025-01-01T09:00:00",
+        "deadline": "2025-01-09T18:00:00",
+        "completed_at": "2025-01-08T12:09:26.709215",
+        "domains": [
+          "data_environment"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "e61c31e3-60aa-471e-9e18-a41538a095f2",
+        "title": "Task-1",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1355068,
+        "advertised_reward_cents": 1355068,
+        "reward_prestige_delta": 0.255,
+        "status": "completed_success",
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "deadline": "2025-01-17T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "62c03b3d-690e-4038-ae50-6366377f5644",
+        "title": "Task-8",
+        "client_name": "Cortex Intelligence",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1853002,
+        "advertised_reward_cents": 1853002,
+        "reward_prestige_delta": 0.255,
+        "status": "completed_success",
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "deadline": "2025-01-17T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "domains": [
+          "research"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "f14cd761-0caa-49c3-a8a1-629ef76fe252",
+        "title": "Task-183",
+        "client_name": "Prism Analytics",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1738037,
+        "advertised_reward_cents": 1738037,
+        "reward_prestige_delta": 0.072,
+        "status": "completed_success",
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "deadline": "2025-01-20T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "domains": [
+          "data_environment"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "3828c670-566a-4378-b2cb-f466a8273827",
+        "title": "Task-191",
+        "client_name": "Equinox Labs",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1254541,
+        "advertised_reward_cents": 1254541,
+        "reward_prestige_delta": 0.034,
+        "status": "cancelled",
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "deadline": "2025-01-17T12:09:26.709215",
+        "completed_at": null,
+        "domains": [
+          "inference"
+        ],
+        "success": null
+      },
+      {
+        "task_id": "0041a7f1-4216-4666-9278-6eb920bbd138",
+        "title": "Task-49",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1647864,
+        "advertised_reward_cents": 1647864,
+        "reward_prestige_delta": 0.118,
+        "status": "completed_success",
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "deadline": "2025-01-27T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "domains": [
+          "research"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "38934e31-105c-4920-87dd-7f1dfc88411a",
+        "title": "Task-110",
+        "client_name": "Cortex Intelligence",
+        "required_prestige": 1,
+        "required_trust": 2,
+        "reward_funds_cents": 1693252,
+        "advertised_reward_cents": 1693252,
+        "reward_prestige_delta": 0.049,
+        "status": "completed_success",
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "deadline": "2025-01-27T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "d239d2bc-cc8a-4aef-ae5a-144cab5399d0",
+        "title": "Task-174",
+        "client_name": "Stratos Cloud",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1122722,
+        "advertised_reward_cents": 1122722,
+        "reward_prestige_delta": 0.094,
+        "status": "completed_success",
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "deadline": "2025-01-27T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "domains": [
+          "data_environment"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "9979e29c-78ca-426c-bee3-165fafb18cb3",
+        "title": "Task-18",
+        "client_name": "Stratos Cloud",
+        "required_prestige": 1,
+        "required_trust": 2,
+        "reward_funds_cents": 1396970,
+        "advertised_reward_cents": 1396970,
+        "reward_prestige_delta": 0.116,
+        "status": "completed_success",
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "deadline": "2025-01-31T17:50:04.774609",
+        "completed_at": "2025-01-28T17:22:52.711054",
+        "domains": [
+          "data_environment"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "017ab6d5-659e-4462-a1b4-39183337442a",
+        "title": "Task-31",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1565834,
+        "advertised_reward_cents": 1565834,
+        "reward_prestige_delta": 0.157,
+        "status": "completed_success",
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "deadline": "2025-01-31T17:50:04.774609",
+        "completed_at": "2025-01-29T13:05:55.447734",
+        "domains": [
+          "research"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "94272afe-d2bb-4839-a400-e503e3b9ce06",
+        "title": "Task-85",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 2,
+        "reward_funds_cents": 1555225,
+        "advertised_reward_cents": 1555225,
+        "reward_prestige_delta": 0.21,
+        "status": "completed_success",
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "deadline": "2025-01-31T17:50:04.774609",
+        "completed_at": "2025-01-28T17:22:52.711054",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "3528adea-801b-4824-b66e-4ecac992d0c2",
+        "title": "Task-25",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1237783,
+        "advertised_reward_cents": 1237783,
+        "reward_prestige_delta": 0.135,
+        "status": "completed_success",
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "deadline": "2025-02-06T17:22:52.711054",
+        "completed_at": "2025-01-30T17:07:46.991249",
+        "domains": [
+          "research"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "195e9fc0-0b14-4f34-9b83-e15e59c51be5",
+        "title": "Task-84",
+        "client_name": "Stratos Cloud",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1248332,
+        "advertised_reward_cents": 1248332,
+        "reward_prestige_delta": 0.02,
+        "status": "completed_success",
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "deadline": "2025-02-06T17:22:52.711054",
+        "completed_at": "2025-02-03T09:00:00",
+        "domains": [
+          "data_environment"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "0b6c42e8-1502-4bf2-8759-5fce4ec6f9fa",
+        "title": "Task-199",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 2,
+        "reward_funds_cents": 1422021,
+        "advertised_reward_cents": 1422021,
+        "reward_prestige_delta": 0.111,
+        "status": "completed_success",
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "deadline": "2025-02-06T17:22:52.711054",
+        "completed_at": "2025-01-30T15:33:06.611374",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "2fa4169b-c810-4f2e-9264-7523a929b335",
+        "title": "Task-133",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 3,
+        "reward_funds_cents": 2157979,
+        "advertised_reward_cents": 2157979,
+        "reward_prestige_delta": 0.015,
+        "status": "completed_success",
+        "accepted_at": "2025-01-30T15:33:06.611374",
+        "deadline": "2025-02-10T15:33:06.611374",
+        "completed_at": "2025-02-04T11:26:21.885783",
+        "domains": [
+          "inference"
+        ],
+        "success": true
+      },
+      {
+        "task_id": "0af06108-bd1c-4d5a-8f24-04d9c67c0a5a",
+        "title": "Task-163",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1565008,
+        "advertised_reward_cents": 1565008,
+        "reward_prestige_delta": 0.077,
+        "status": "active",
+        "accepted_at": "2025-01-30T17:07:46.991249",
+        "deadline": "2025-02-10T17:07:46.991249",
+        "completed_at": null,
+        "domains": [
+          "inference"
+        ],
+        "success": null
+      },
+      {
+        "task_id": "8f1ee3ff-0a00-4b72-b6f6-e005161f23dd",
+        "title": "Task-145",
+        "client_name": "Helix Systems",
+        "required_prestige": 1,
+        "required_trust": 0,
+        "reward_funds_cents": 1358299,
+        "advertised_reward_cents": 1358299,
+        "reward_prestige_delta": 0.078,
+        "status": "active",
+        "accepted_at": "2025-02-03T09:00:00",
+        "deadline": "2025-02-11T18:00:00",
+        "completed_at": null,
+        "domains": [
+          "inference"
+        ],
+        "success": null
+      }
+    ],
+    "ledger": [
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "category": "task_reward",
+        "amount_cents": 1522936
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "category": "task_reward",
+        "amount_cents": 1416168
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "category": "task_reward",
+        "amount_cents": 1853002
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "category": "task_reward",
+        "amount_cents": 1738037
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "category": "task_reward",
+        "amount_cents": 1355068
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "category": "task_reward",
+        "amount_cents": 1693252
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "category": "task_reward",
+        "amount_cents": 1647864
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "category": "task_reward",
+        "amount_cents": 1122722
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "category": "task_reward",
+        "amount_cents": 1555225
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "category": "task_reward",
+        "amount_cents": 1396970
+      },
+      {
+        "time": "2025-01-29T13:05:55.447734",
+        "category": "task_reward",
+        "amount_cents": 1565834
+      },
+      {
+        "time": "2025-01-30T15:33:06.611374",
+        "category": "task_reward",
+        "amount_cents": 1422021
+      },
+      {
+        "time": "2025-01-30T17:07:46.991249",
+        "category": "task_reward",
+        "amount_cents": 1237783
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -409260
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -332782
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -251809
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -785445
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -274604
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -804920
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -699726
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "monthly_payroll",
+        "amount_cents": -404957
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "category": "task_reward",
+        "amount_cents": 1248332
+      },
+      {
+        "time": "2025-02-04T11:26:21.885783",
+        "category": "task_reward",
+        "amount_cents": 2157979
+      }
+    ],
+    "client_trust": [
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Cortex Intelligence",
+        "trust_level": 0.0,
+        "loyalty": -0.176
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Equinox Labs",
+        "trust_level": 0.0,
+        "loyalty": -0.562
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Helix Systems",
+        "trust_level": 0.0,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Prism Analytics",
+        "trust_level": 0.0,
+        "loyalty": -0.009
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Stratos Cloud",
+        "trust_level": 0.0,
+        "loyalty": 0.059
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Vanguard ML",
+        "trust_level": 0.0,
+        "loyalty": -0.718
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Cortex Intelligence",
+        "trust_level": 1.6,
+        "loyalty": -0.176
+      },
+      {
+        "time": "2025-01-08T12:09:26.709215",
+        "client_name": "Stratos Cloud",
+        "trust_level": 1.6,
+        "loyalty": 0.059
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "client_name": "Helix Systems",
+        "trust_level": 1.6,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "client_name": "Cortex Intelligence",
+        "trust_level": 2.4537,
+        "loyalty": -0.176
+      },
+      {
+        "time": "2025-01-16T12:58:01.944506",
+        "client_name": "Prism Analytics",
+        "trust_level": 1.6,
+        "loyalty": -0.009
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "client_name": "Helix Systems",
+        "trust_level": 2.4635,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "client_name": "Cortex Intelligence",
+        "trust_level": 2.9985,
+        "loyalty": -0.176
+      },
+      {
+        "time": "2025-01-22T17:50:04.774609",
+        "client_name": "Stratos Cloud",
+        "trust_level": 2.4202,
+        "loyalty": 0.059
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "client_name": "Stratos Cloud",
+        "trust_level": 2.978,
+        "loyalty": 0.059
+      },
+      {
+        "time": "2025-01-28T17:22:52.711054",
+        "client_name": "Helix Systems",
+        "trust_level": 3.0063,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-29T13:05:55.447734",
+        "client_name": "Helix Systems",
+        "trust_level": 3.404,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-30T15:33:06.611374",
+        "client_name": "Helix Systems",
+        "trust_level": 3.6853,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-01-30T17:07:46.991249",
+        "client_name": "Helix Systems",
+        "trust_level": 3.9006,
+        "loyalty": 0.056
+      },
+      {
+        "time": "2025-02-03T09:00:00",
+        "client_name": "Stratos Cloud",
+        "trust_level": 3.3543,
+        "loyalty": 0.059
+      },
+      {
+        "time": "2025-02-04T11:26:21.885783",
+        "client_name": "Helix Systems",
+        "trust_level": 4.0325,
+        "loyalty": 0.056
+      }
+    ],
+    "employees": [
+      {
+        "name": "Emp_1",
+        "tier": "junior",
+        "salary_cents": 412260,
+        "skill_rates": {
+          "data_environment": 5.8968,
+          "inference": 1.2385,
+          "research": 2.2839,
+          "training": 3.0184
+        }
+      },
+      {
+        "name": "Emp_2",
+        "tier": "junior",
+        "salary_cents": 335782,
+        "skill_rates": {
+          "data_environment": 3.0613,
+          "inference": 7.6698,
+          "research": 3.9271,
+          "training": 2.8867
+        }
+      },
+      {
+        "name": "Emp_3",
+        "tier": "junior",
+        "salary_cents": 251809,
+        "skill_rates": {
+          "data_environment": 3.423,
+          "inference": 2.4132,
+          "research": 2.3602,
+          "training": 2.322
+        }
+      },
+      {
+        "name": "Emp_4",
+        "tier": "mid",
+        "salary_cents": 785445,
+        "skill_rates": {
+          "data_environment": 4.1649,
+          "inference": 5.846,
+          "research": 10.0,
+          "training": 4.1966
+        }
+      },
+      {
+        "name": "Emp_5",
+        "tier": "junior",
+        "salary_cents": 277604,
+        "skill_rates": {
+          "data_environment": 1.2539,
+          "inference": 4.8604,
+          "research": 1.2497,
+          "training": 3.593
+        }
+      },
+      {
+        "name": "Emp_6",
+        "tier": "mid",
+        "salary_cents": 811920,
+        "skill_rates": {
+          "data_environment": 10.0,
+          "inference": 4.3666,
+          "research": 5.3908,
+          "training": 5.9866
+        }
+      },
+      {
+        "name": "Emp_7",
+        "tier": "mid",
+        "salary_cents": 706726,
+        "skill_rates": {
+          "data_environment": 6.1279,
+          "inference": 10.0,
+          "research": 4.9122,
+          "training": 5.1784
+        }
+      },
+      {
+        "name": "Emp_8",
+        "tier": "junior",
+        "salary_cents": 404957,
+        "skill_rates": {
+          "data_environment": 2.8359,
+          "inference": 3.537,
+          "research": 7.0554,
+          "training": 3.9213
+        }
+      }
+    ],
+    "assignments": [
+      {
+        "task_title": "Task-10",
+        "status": "cancelled",
+        "employees_assigned": [
+          "Emp_4",
+          "Emp_8"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-01-01T09:00:00",
+        "completed_at": null,
+        "success": null
+      },
+      {
+        "task_title": "Task-128",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-01T09:00:00",
+        "completed_at": "2025-01-08T12:09:26.709215",
+        "success": true
+      },
+      {
+        "task_title": "Task-162",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-01T09:00:00",
+        "completed_at": "2025-01-08T12:09:26.709215",
+        "success": true
+      },
+      {
+        "task_title": "Task-1",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "success": true
+      },
+      {
+        "task_title": "Task-8",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_4",
+          "Emp_2",
+          "Emp_8"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "success": true
+      },
+      {
+        "task_title": "Task-183",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "completed_at": "2025-01-16T12:58:01.944506",
+        "success": true
+      },
+      {
+        "task_title": "Task-191",
+        "status": "cancelled",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-01-08T12:09:26.709215",
+        "completed_at": null,
+        "success": null
+      },
+      {
+        "task_title": "Task-49",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_4",
+          "Emp_8"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "success": true
+      },
+      {
+        "task_title": "Task-110",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "success": true
+      },
+      {
+        "task_title": "Task-174",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-01-16T12:58:01.944506",
+        "completed_at": "2025-01-22T17:50:04.774609",
+        "success": true
+      },
+      {
+        "task_title": "Task-18",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "completed_at": "2025-01-28T17:22:52.711054",
+        "success": true
+      },
+      {
+        "task_title": "Task-31",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_4",
+          "Emp_8"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "completed_at": "2025-01-29T13:05:55.447734",
+        "success": true
+      },
+      {
+        "task_title": "Task-85",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-22T17:50:04.774609",
+        "completed_at": "2025-01-28T17:22:52.711054",
+        "success": true
+      },
+      {
+        "task_title": "Task-25",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_4",
+          "Emp_8"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "completed_at": "2025-01-30T17:07:46.991249",
+        "success": true
+      },
+      {
+        "task_title": "Task-84",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "completed_at": "2025-02-03T09:00:00",
+        "success": true
+      },
+      {
+        "task_title": "Task-199",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-28T17:22:52.711054",
+        "completed_at": "2025-01-30T15:33:06.611374",
+        "success": true
+      },
+      {
+        "task_title": "Task-133",
+        "status": "completed_success",
+        "employees_assigned": [
+          "Emp_7",
+          "Emp_5",
+          "Emp_2"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-30T15:33:06.611374",
+        "completed_at": "2025-02-04T11:26:21.885783",
+        "success": true
+      },
+      {
+        "task_title": "Task-163",
+        "status": "active",
+        "employees_assigned": [
+          "Emp_3",
+          "Emp_4",
+          "Emp_8"
+        ],
+        "num_assigned": 3,
+        "accepted_at": "2025-01-30T17:07:46.991249",
+        "completed_at": null,
+        "success": null
+      },
+      {
+        "task_title": "Task-145",
+        "status": "active",
+        "employees_assigned": [
+          "Emp_1",
+          "Emp_6"
+        ],
+        "num_assigned": 2,
+        "accepted_at": "2025-02-03T09:00:00",
+        "completed_at": null,
+        "success": null
+      }
+    ],
+    "clients": [
+      {
+        "name": "Stratos Cloud",
+        "loyalty": 0.059,
+        "is_rat": false,
+        "tier": "Enterprise",
+        "specialty_domains": [
+          "data_environment"
+        ],
+        "final_trust": 3.257
+      },
+      {
+        "name": "Helix Systems",
+        "loyalty": 0.056,
+        "is_rat": false,
+        "tier": "Enterprise",
+        "specialty_domains": [
+          "research",
+          "inference"
+        ],
+        "final_trust": 4.007
+      },
+      {
+        "name": "Cortex Intelligence",
+        "loyalty": -0.176,
+        "is_rat": false,
+        "tier": "Enterprise",
+        "specialty_domains": [
+          "inference"
+        ],
+        "final_trust": 2.691
+      },
+      {
+        "name": "Prism Analytics",
+        "loyalty": -0.009,
+        "is_rat": false,
+        "tier": "Enterprise",
+        "specialty_domains": [
+          "training"
+        ],
+        "final_trust": 1.231
+      },
+      {
+        "name": "Equinox Labs",
+        "loyalty": -0.562,
+        "is_rat": true,
+        "tier": "Standard",
+        "specialty_domains": [
+          "inference"
+        ],
+        "final_trust": 0.0
+      },
+      {
+        "name": "Vanguard ML",
+        "loyalty": -0.718,
+        "is_rat": true,
+        "tier": "Premium",
+        "specialty_domains": [
+          "research"
+        ],
+        "final_trust": 0.0
+      }
+    ],
+    "scratchpad": null,
+    "config": {
+      "num_employees": 8,
+      "num_clients": 6,
+      "initial_funds_cents": 20000000,
+      "salary_bump_pct": 0.01,
+      "trust_build_rate": 5.0,
+      "trust_gating_fraction": 0.3,
+      "trust_gated_reward_boost": 0.0,
+      "trust_work_reduction_max": 0.5,
+      "loyalty_rat_fraction": 0.35,
+      "loyalty_severity": 1.0,
+      "penalty_fail_funds_pct": 0.35,
+      "deadline_min_biz_days": 7,
+      "deadline_qty_per_day": 150.0,
+      "prestige_decay_per_day": 0.0,
+      "reward_prestige_scale": 0.3,
+      "skill_rate_max": 10.0,
+      "market_browse_default_limit": 50
+    }
+  }
+}
