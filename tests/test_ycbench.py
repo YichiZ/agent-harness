@@ -74,7 +74,7 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     assert "Your note from the last checkpoint" in "\n".join(rows[1]["prompt"])
     summary = json.loads((tmp_path / "summary.json").read_text())
     assert summary["checkpoints"] == 3 and summary["total_cost_usd"] == 0
-    assert summary["yc_bench_commit"] and "summarizer.v2.md" in summary["prompt_sha256"]
+    assert summary["yc_bench_commit"] and "summarizer.v3.md" in summary["prompt_sha256"]
     assert isinstance(summary["git_dirty"], bool)
     assert summary["runner_sha256"] == hashlib.sha256(SCRIPT.read_bytes()).hexdigest()
     assert "\\n" not in (tmp_path / "checkpoints" / "cp-001.json").read_text()  # multi-line text is a list of lines
@@ -84,3 +84,19 @@ def test_fake_run_advances_the_simulation(tmp_path, monkeypatch):
     (tmp_path / "run.md").unlink()
     assert runner.main(["--render", str(tmp_path)]) == 0
     assert (tmp_path / "run.md").read_text().count("## Checkpoint") == 3
+
+
+def test_current_prompts_do_not_leak_simulator_secrets():
+    """Fairness: stock YC-Bench agents get neither real client names nor how unreliable clients behave."""
+    from yc_bench.services.generate_clients import _CLIENT_NAME_POOL
+
+    release = json.loads((SCRIPT.parent / "release.json").read_text())
+    prompts = sorted((SCRIPT.parent / "prompts").glob(f"*.{release['prompt_version']}.md"))
+    assert prompts
+    for p in prompts:
+        text = p.read_text().lower()
+        leaks = [n for n in _CLIENT_NAME_POOL if n.lower() in text]
+        leaks += [w for w in ("inflat", "scope creep", "adversar", "after you accept", "after accept",
+                              "35%", "strongest", "max(7", "/ 150", "09:00", "business hours a day",
+                              "only on success", "no cash penalty") if w in text]
+        assert not leaks, f"{p.name} leaks {leaks}"
