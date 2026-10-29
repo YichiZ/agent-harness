@@ -36,6 +36,8 @@ Example chat prompts: "Find complaints from the last 60 days that were never rei
 
 [YC-Bench](https://github.com/collinear-ai/yc-bench) puts the agent in charge of a simulated startup for a year: accept tasks from clients, assign employees, avoid bankruptcy. The runner seeds the world with YC-Bench's own code and gives the agent one tool, `run_command`, for its `yc-bench` CLI.
 
+The system prompt (`bench/yc-bench/prompts/system.v4.md`) is the stock YC-Bench agent prompt ([arXiv 2604.01212](https://arxiv.org/abs/2604.01212), Appendix C; `yc_bench/agent/prompt.py` in upstream `collinear-ai/yc-bench` at `97ca2b8`), with memory. The harness's memory replaces YC-Bench's 20-turn history window and scratchpad, so the scratchpad instructions and commands are gone and the agent ends each checkpoint with a short note, which becomes episodic memory. Because the runner owns `sim resume`, that step and command are gone too. Everything else (workflow, commands, key mechanics, the client warning) is stock wording. The checkpoint messages carry the same idle and undispatched warnings as stock's per-turn context. v3 also told the agent to check deadline feasibility before accepting and explained cents in a Money section; v4 drops both.
+
 ```bash
 uv run python bench/yc-bench/run.py --fake --max-checkpoints 3                 # offline, scripted model, no API cost
 uv run python bench/yc-bench/run.py --seed 1 --max-checkpoints 10 --max-cost 5 # real model, short run
