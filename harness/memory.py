@@ -232,12 +232,16 @@ class SemanticMemory:
         self.store, self.embedder = store, embedder
 
     def search(self, user_id: str, query: str, k: int) -> list[str]:
+        """Every 'Subject:' fact (one per subject, so bounded), then the k most similar plain facts."""
+        # ponytail: subject facts skip ranking; cap them if a store ever grows past a few dozen subjects
         facts = self.store.facts(user_id)
-        if not facts:
-            return []
+        keyed = [f.fact for f in facts if subject(f.fact)]
+        plain = [f for f in facts if not subject(f.fact)]
+        if not plain:
+            return keyed
         [q] = self.embedder.embed([query])
-        scored = sorted(((cosine(q, f.embedding), f.fact) for f in facts), reverse=True)
-        return [fact for score, fact in scored[:k] if score >= MIN_SIMILARITY]
+        scored = sorted(((cosine(q, f.embedding), f.fact) for f in plain), reverse=True)
+        return keyed + [fact for score, fact in scored[:k] if score >= MIN_SIMILARITY]
 
 
 class EpisodicMemory:
@@ -301,6 +305,22 @@ def build_working_memory(release: Release, procedural: ProceduralMemory, semanti
 # ── consolidation: episodic -> semantic, only after N new chats ───────────
 
 REPLACE_SIMILARITY = 0.6
+SUBJECT = re.compile(r"^(Rule: [^:.]{1,40}|[^:.]{1,40}): ")  # "Acme Widgets: …", "Rule: payroll: …"
+
+
+def subject(fact: str) -> str | None:
+    m = SUBJECT.match(fact)
+    return m.group(1).lower() if m else None
+
+
+def replacement_for(fact: str, vec: list[float], existing: list[Fact]) -> Fact | None:
+    """The fact this one replaces: same subject if it has one, else the nearest subject-less lookalike."""
+    key = subject(fact)
+    if key:
+        return next((f for f in existing if subject(f.fact) == key), None)
+    plain = [f for f in existing if subject(f.fact) is None]
+    best = max(plain, key=lambda f: cosine(vec, f.embedding), default=None)
+    return best if best and cosine(vec, best.embedding) >= REPLACE_SIMILARITY else None
 
 FACTS_SCHEMA = {
     "type": "object",
@@ -339,9 +359,9 @@ class Consolidator:
         chat_ids = sorted({e.chat_id for e in new})
         vectors = self.embedder.embed(facts) if facts else []
         for fact, vec in zip(facts, vectors):
-            best = max(existing, key=lambda f: cosine(vec, f.embedding), default=None)
-            if best and cosine(vec, best.embedding) >= REPLACE_SIMILARITY:
-                self.store.replace_fact(best.id, fact, vec, sorted(set(best.source_chat_ids) | set(chat_ids)))
+            old = replacement_for(fact, vec, self.store.facts(user_id))  # re-read: earlier facts in this batch count
+            if old:
+                self.store.replace_fact(old.id, fact, vec, sorted(set(old.source_chat_ids) | set(chat_ids)))
             else:
                 self.store.add_fact(user_id, fact, vec, chat_ids)
         self.store.set_watermark(user_id, new[-1].id)

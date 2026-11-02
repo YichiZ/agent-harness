@@ -135,6 +135,42 @@ def test_consolidation_waits_for_n_chats_then_distills_and_replaces_facts(releas
     assert set(facts[0].source_chat_ids) == {"c1", "c2", "c3", "c4"}
 
 
+def test_consolidation_replaces_facts_by_subject_not_similarity(release):
+    """A fact with a 'Subject:' prefix replaces only the fact with that subject, never a lookalike."""
+    summaries = iter([
+        as_json({"facts": ["Acme Widgets: Task-3 failed, late by 40 hours.",
+                           "Bolt Corp: Task-4 failed, late by 40 hours.",
+                           "Rule: payroll: charged monthly.",
+                           "Rule: deadlines: visible after accept."]}),
+        as_json({"facts": ["Acme Widgets: 2 finished early, 1 failed.",
+                           "Acme Widgets: 3 finished early, 1 failed.",  # same batch: the later one wins
+                           "Rule: payroll: charged on the first business day."]}),
+    ])
+    store = Store()
+    agent, _ = agent_with(release, *[text("ok")] * 4, side=lambda c: next(summaries), store=store)
+    for chat in ("c1", "c2", "c3", "c4"):
+        agent.run("op-1", chat, "hi")
+    assert sorted(f.fact for f in store.facts("op-1")) == [
+        "Acme Widgets: 3 finished early, 1 failed.",
+        "Bolt Corp: Task-4 failed, late by 40 hours.",
+        "Rule: deadlines: visible after accept.",
+        "Rule: payroll: charged on the first business day.",
+    ]
+
+
+def test_subject_facts_are_always_recalled_and_plain_facts_by_similarity():
+    from harness.memory import HashingEmbedder, SemanticMemory
+
+    store, emb = Store(), HashingEmbedder()
+    facts = ["Acme Widgets: 3 failed late. Avoid taking more work from this client.",
+             "Operator wants follow-up meetings booked for 15 minutes.",
+             "Operator's favourite colour is teal."]
+    for f, v in zip(facts, emb.embed(facts)):
+        store.add_fact("op-1", f, v, ["c1"])
+    got = SemanticMemory(store, emb).search("op-1", "book follow-up meetings", k=1)
+    assert got == [facts[0], facts[1]]
+
+
 def test_prompts_load_from_files_in_prompts_dir(release, tmp_path):
     assert "long-term memory" in release.summarizer_prompt()  # prompts/summarizer.v1.md
     (tmp_path / "system.t1.md").write_text("custom system")
