@@ -1,6 +1,6 @@
 # Review: Sonnet 5.5 full-year run on prompts v4
 
-Run settings: claude-sonnet-5-5 at medium effort as the agent, Haiku summarizer, seed 2, default config, the full 2025 horizon (125 checkpoints, `horizon_end`). The code is main at 22c934e; the prompt hashes in `summary.json` match `bench/yc-bench/prompts/*.v4.md`. This is the first full-year run, so the earlier 10-checkpoint smokes could not show the things below. I computed every number from the raw `checkpoints/cp-*.json` and `summary.json` with scripts and checked the quotes against the log. Ground truth for which clients are unreliable comes from `summary.json` (`time_series.clients[].is_rat`): Equinox Labs and Vanguard ML. They are the same two clients the Opus seed 1 smoke ran into, because every seed shares one world.
+Run settings: claude-sonnet-5-5 at medium effort as the agent, Haiku summarizer, seed 2, default config, the full 2025 horizon (125 checkpoints, `horizon_end`). The run's `git_sha` is 5f6d395: main at 22c934e plus a `.superset/config.toml` that is not on main and does not affect the run; the prompt hashes in `summary.json` match `bench/yc-bench/prompts/*.v4.md`. This is the first full-year run, so the earlier 10-checkpoint smokes could not show the things below. I computed every number from the raw `checkpoints/cp-*.json` and `summary.json` with scripts and checked the quotes against the log. Ground truth for which clients are unreliable comes from `summary.json` (`time_series.clients[].is_rat`): Equinox Labs and Vanguard ML. They are the same two clients the Opus seed 1 smoke ran into, because every seed shares one world.
 
 ## Results
 
@@ -8,7 +8,7 @@ Final funds $1,473,616 from $200,000 (cost $11.83, 669 calls, about 5.4 calls pe
 
 | Client | accepted | ok | failed | cancelled | revenue | failure penalty | task-days | revenue per task-day |
 |---|---|---|---|---|---|---|---|---|
-| Helix Systems | 41 | 41 | 0 | 0 | $597,217 | 0 | 119.5 | $4,998 |
+| Helix Systems | 42 (1 unfinished) | 41 | 0 | 0 | $597,217 | 0 | 119.5 | $4,998 |
 | Cortex Intelligence | 40 | 40 | 0 | 0 | $585,362 | 0 | 109.0 | $5,370 |
 | Stratos Cloud | 39 | 39 | 0 | 0 | $543,518 | 0 | 113.8 | $4,776 |
 | Prism Analytics | 12 | 12 | 0 | 0 | $157,252 | 0 | 50.7 | $3,104 |
@@ -20,9 +20,9 @@ Final funds $1,473,616 from $200,000 (cost $11.83, 669 calls, about 5.4 calls pe
 - **The two bad clients took 47% of all task-days.** That is 343 of 736 task-days, for a net of -$49k. The four good clients earned about $4,800 per task-day. If only part of that time had gone to good tasks the run would have ended far above $1.47M. The upper bound is limited by how many good tasks were on the market; see the browse-window finding below.
 - **Months:** the month with no bad-client task was the best one. April had 23 completions and $385k revenue. Bad clients took 55 to 70% of task-days in May, June, August, September and November, and revenue in those months was $120k to $160k.
 - **Funds curve (month end):** Jan $335k, Feb $501k, Mar $614k, Apr $955k, May $1.03M, Jun $1.11M, Jul $1.19M, Aug $1.30M, Sep $1.35M, Oct $1.42M, Nov $1.49M, Dec $1.47M. Growth averaged about $190k per month in Jan to Apr and about $65k per month after.
-- **Revenue vs payroll:** revenue $1,932k, penalties $98k, payroll $561k (11 monthly payrolls). Monthly payroll rose from $38,005 to $62,365 (+64%) through salary bumps, about $143k more than flat payroll would have cost.
-- **Idle time:** small. The two teams were busy 359.5 and 355.8 of 365 days, about 2% idle, almost all in the last 12 days (team B idle 6.1 days from 2025-12-19, team A idle 5.0 days from 2025-12-25).
-- **Other seeds:** the Opus seed 1 smoke had $389,697 after 35 days and this run had $335,146 at the same point, so the first month was not unusually good or bad.
+- **Revenue vs payroll:** revenue $1,932k, penalties $98k, payroll $561k (11 monthly payrolls). The 11 charged payrolls rose from $39,245 (2025-02-03) to $61,205 (2025-12-01), +56%, through salary bumps.
+- **Idle time:** small. The two teams were busy 359.5 and 355.8 of 365 days, about 2% idle, almost all in the last 12 days (team B idle 6.1 days from 2025-12-19 and again about 1.7 days after Task-13 finished on 2025-12-30; team A idle 5.0 days from 2025-12-25).
+- **Other seeds:** at 2025-02-04 the Opus seed 1 smoke had $389,697 and this run had $304,315 (cp8), about $85k behind. Different seed and model, so this is only a rough reference.
 
 ## Bad clients
 
@@ -40,8 +40,8 @@ Both were first identified by their own behaviour early. Vanguard Task-46 failed
 **Why it still accepted: mostly the agent, not the memory.** The memory was often present and the agent often said so in the same note.
 - **It dropped the avoidance on one lucky win.** cp61: "Task-58 finished ahead of deadline and trust rose by 1.6, so I'm no longer avoiding this client. Its research tasks pay well." Then Task-88 and Task-106 failed. cp62: "Vanguard ML research tasks dominate the market and pay well, so I'm continuing with them."
 - **It read the memory wording backwards.** The summarizer wrote "failure is suspect as client blame". The agent took that as a reason to try again: cp50: "The earlier Equinox failure looked like client blame, so these two are a test of whether they're reliable." (cp92 repeats this.) The suspicion was correct, since both are rat clients, but "suspect" reads as doubt.
-- **It named the risk and accepted anyway** (cp85, cp111, cp117: "Vanguard has failed five tasks, so this one is a risk").
-- **Gated tasks tempted it.** cp96, cp97, cp99: "Equinox trust was high enough for this gated task".
+- **It named the risk and accepted anyway** (cp85: "Vanguard has failed for me before, so this is a risk"; cp111: "Vanguard has failed us before, so this one is a risk"; cp117: "Vanguard has failed five tasks, so this one is a risk").
+- **Gated tasks tempted it.** cp97: "Equinox trust was high enough for this gated task" (cp96 has similar wording: "probably what let me take this gated task").
 - **Its notes copied "still avoiding" forward while accepting.** cp70 (right after taking Equinox at cp68 and cp69): "I'm still avoiding Equinox Labs and Vanguard ML, which keep failing." cp117: "Equinox Labs has failed every task I gave it", yet Task-101, Task-107 and Task-35 had succeeded.
 - **The "market has nothing else" claim is a browse-window artifact.** `market browse` is sorted by reward descending in all 110 unfiltered browses, and the two bad clients are the highest-paying. They made up 69% of every listing on average (79% in the last 30). The agent always used `--limit 8` to `20` and never `--offset`, and used `--domain` only 5 times. In 13 of the 23 bad-client accepts the same listing still held an eligible good task that was not taken. For the other 10 the window had none, and I cannot say whether the market had more beyond it. Same sim time 2025-12-29T10:01:52: cp122 browsed with `--limit 10` (8 Vanguard, 1 Equinox, 1 Stratos), declined, and noted "almost all Vanguard ML research work"; cp123 browsed with `--limit 20`, found Helix Task-13 and took it. It paid $9,082.
 - **It never looked at the stock tools meant for this.** Across all 125 checkpoints there were 0 `client history`, 0 `client list`, 0 `company status`, 0 `task inspect` and 0 `task cancel` calls. The commands were accept, assign and dispatch 156 times each, browse 115, `employee list` 31 and `task list` 29. The cp1 note said "Next time: Inspect a task's deadline and required work before accepting it." and it never did. In the Opus seed 1 smoke the agent inspected after accepting and cancelled both bad tasks early, with 0 failures; here Task-106 ran 30 days and was 507 hours late.
