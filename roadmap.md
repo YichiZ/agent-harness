@@ -20,8 +20,8 @@
 
 **Done after the seed 2 year run** ([`bench/yc-bench/results/2026-11-02-year-sonnet-seed2-v4/review.md`](bench/yc-bench/results/2026-11-02-year-sonnet-seed2-v4/review.md)):
 
-- (b), (c): facts that start with `Subject:` replace only the fact with the same subject (`harness/memory.py`, `replacement_for`). Cosine replacement is now limited to facts with no subject, so a client fact can no longer overwrite another client's fact.
+- (b), (c): with `subject_keys` (on for YC-Bench, off for the demo), facts that start with `Subject:` replace only the fact with the same subject (`harness/memory.py`, `replacement_for`). Cosine replacement is now limited to facts with no subject, so a client fact can no longer overwrite another client's fact.
 - Recall shows every subject fact, and top-k applies only to facts with no subject. In that run, k=10 hid avoid-facts at 3 bad-client accepts.
-- Prompts v5: client facts are track records with counts, failures with clear evidence end in "Avoid taking more work from this client", rules need a proving event and their own topic, and Throughput facts, task ids and unfinished-task facts are banned. `checkpoint.v5.md` no longer implies daily payroll. `system.v5.md` is unchanged from v4.
+- Prompts v5: client facts are track records with counts, rules need a proving event and their own topic, and Throughput facts, task ids and unfinished-task facts are banned. `checkpoint.v5.md` no longer implies daily payroll. `system.v5.md` is unchanged from v4.
 
-**Still planned:** (a) and (d) are now bounded by one fact per subject, but there is still no TTL or cap. (e), (f) and (g) are unchanged. The other suggestions from that review: count client outcomes in code from `task_completed` events instead of trusting the summarizer, and log the store size per checkpoint.
+**Still planned:** (a) and (d) are now bounded by one fact per subject, but there is still no TTL or cap. (e), (f) and (g) are unchanged. A structured `{subject, fact}` summarizer schema would remove the prefix regex. Subject facts are recalled uncapped. The other suggestions from that review: count client outcomes in code from `task_completed` events instead of trusting the summarizer, and log the store size per checkpoint.

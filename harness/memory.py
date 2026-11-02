@@ -3,7 +3,8 @@
 Working memory (the context window for one run) =
     system prompt
   + procedural memory: skill .md files whose triggers match the request
-  + semantic memory:   top-k durable facts about this user (vector search)
+  + semantic memory:   top-k durable facts about this user (vector search); with
+                       `subject_keys`, every "Subject: ..." fact too (one per subject)
   + episodic memory:   recent chats (SQL) + relevant past messages (vector search)
   + current chat history
   + the user prompt
@@ -11,7 +12,8 @@ Working memory (the context window for one run) =
 Episodes and facts live in SQLite (Postgres + pgvector in prod). The embedder is
 a deterministic hashed bag-of-words so everything runs offline; swap in a real
 model behind `Embedder.embed`. Every N chats the summarizer (cheaper model)
-distills new episodes into facts; a near-duplicate fact is replaced, not appended.
+distills new episodes into facts; a near-duplicate fact (or, with `subject_keys`,
+the fact with the same subject) is replaced, not appended.
 """
 from __future__ import annotations
 
@@ -21,7 +23,7 @@ import math
 import re
 import sqlite3
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import TYPE_CHECKING, Protocol
 
@@ -231,17 +233,18 @@ class SemanticMemory:
     def __init__(self, store: Store, embedder: Embedder):
         self.store, self.embedder = store, embedder
 
-    def search(self, user_id: str, query: str, k: int) -> list[str]:
-        """Every 'Subject:' fact (one per subject, so bounded), then the k most similar plain facts."""
-        # ponytail: subject facts skip ranking; cap them if a store ever grows past a few dozen subjects
-        facts = self.store.facts(user_id)
-        keyed = [f.fact for f in facts if subject(f.fact)]
-        plain = [f for f in facts if not subject(f.fact)]
+    def search(self, user_id: str, query: str, k: int, *, keyed: bool = False) -> list[str]:
+        """The k most similar facts; with `keyed`, every 'Subject:' fact first and top-k over the rest."""
+        # ponytail: subject facts skip ranking and are uncapped; cap them if a store passes a few dozen subjects
+        always, plain = [], []
+        for f in self.store.facts(user_id):
+            (always if keyed and subject(f.fact) else plain).append(f)
+        pinned = [f.fact for f in always]
         if not plain:
-            return keyed
+            return pinned
         [q] = self.embedder.embed([query])
         scored = sorted(((cosine(q, f.embedding), f.fact) for f in plain), reverse=True)
-        return keyed + [fact for score, fact in scored[:k] if score >= MIN_SIMILARITY]
+        return pinned + [fact for score, fact in scored[:k] if score >= MIN_SIMILARITY]
 
 
 class EpisodicMemory:
@@ -285,7 +288,7 @@ class WorkingMemory:
 def build_working_memory(release: Release, procedural: ProceduralMemory, semantic: SemanticMemory,
                          episodic: EpisodicMemory, user_id: str, chat_id: str, prompt: str) -> WorkingMemory:
     skills = procedural.select(prompt)
-    facts = semantic.search(user_id, prompt, release.semantic_top_k)
+    facts = semantic.search(user_id, prompt, release.semantic_top_k, keyed=release.subject_keys)
     episodes = episodic.recall(user_id, chat_id, prompt,
                                recent_k=release.episodic_recent_k, top_k=release.episodic_top_k)
 
@@ -305,7 +308,7 @@ def build_working_memory(release: Release, procedural: ProceduralMemory, semanti
 # ── consolidation: episodic -> semantic, only after N new chats ───────────
 
 REPLACE_SIMILARITY = 0.6
-SUBJECT = re.compile(r"^(Rule: [^:.]{1,40}|[^:.]{1,40}): ")  # "Acme Widgets: …", "Rule: payroll: …"
+SUBJECT = re.compile(r"^(Rule: [^:.]{1,40}|(?!Rule:)[^:.]{1,40}): ")  # "Acme Widgets: …", "Rule: payroll: …"
 
 
 def subject(fact: str) -> str | None:
@@ -313,12 +316,12 @@ def subject(fact: str) -> str | None:
     return m.group(1).lower() if m else None
 
 
-def replacement_for(fact: str, vec: list[float], existing: list[Fact]) -> Fact | None:
-    """The fact this one replaces: same subject if it has one, else the nearest subject-less lookalike."""
-    key = subject(fact)
+def replacement_for(fact: str, vec: list[float], existing: list[Fact], keyed: bool) -> Fact | None:
+    """The fact this one replaces: with `keyed`, the one with the same subject; else the nearest lookalike."""
+    key = subject(fact) if keyed else None
     if key:
         return next((f for f in existing if subject(f.fact) == key), None)
-    plain = [f for f in existing if subject(f.fact) is None]
+    plain = [f for f in existing if not (keyed and subject(f.fact))]
     best = max(plain, key=lambda f: cosine(vec, f.embedding), default=None)
     return best if best and cosine(vec, best.embedding) >= REPLACE_SIMILARITY else None
 
@@ -358,11 +361,15 @@ class Consolidator:
 
         chat_ids = sorted({e.chat_id for e in new})
         vectors = self.embedder.embed(facts) if facts else []
-        for fact, vec in zip(facts, vectors):
-            old = replacement_for(fact, vec, self.store.facts(user_id))  # re-read: earlier facts in this batch count
+        for fact, vec in zip(facts, vectors):  # `existing` is kept current so later facts in a batch win
+            old = replacement_for(fact, vec, existing, self.release.subject_keys)
             if old:
-                self.store.replace_fact(old.id, fact, vec, sorted(set(old.source_chat_ids) | set(chat_ids)))
+                sources = sorted(set(old.source_chat_ids) | set(chat_ids))
+                self.store.replace_fact(old.id, fact, vec, sources)
+                existing = [replace(f, fact=fact, embedding=vec, source_chat_ids=sources) if f.id == old.id else f
+                            for f in existing]
             else:
-                self.store.add_fact(user_id, fact, vec, chat_ids)
+                new_id = self.store.add_fact(user_id, fact, vec, chat_ids)
+                existing = existing + [Fact(new_id, user_id, fact, vec, chat_ids, time.time())]
         self.store.set_watermark(user_id, new[-1].id)
         return facts

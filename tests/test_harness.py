@@ -137,6 +137,7 @@ def test_consolidation_waits_for_n_chats_then_distills_and_replaces_facts(releas
 
 def test_consolidation_replaces_facts_by_subject_not_similarity(release):
     """A fact with a 'Subject:' prefix replaces only the fact with that subject, never a lookalike."""
+    release = dataclasses.replace(release, subject_keys=True)
     summaries = iter([
         as_json({"facts": ["Acme Widgets: Task-3 failed, late by 40 hours.",
                            "Bolt Corp: Task-4 failed, late by 40 hours.",
@@ -167,8 +168,20 @@ def test_subject_facts_are_always_recalled_and_plain_facts_by_similarity():
              "Operator's favourite colour is teal."]
     for f, v in zip(facts, emb.embed(facts)):
         store.add_fact("op-1", f, v, ["c1"])
-    got = SemanticMemory(store, emb).search("op-1", "book follow-up meetings", k=1)
-    assert got == [facts[0], facts[1]]
+    memory = SemanticMemory(store, emb)
+    assert memory.search("op-1", "book follow-up meetings", k=1, keyed=True) == [facts[0], facts[1]]
+    assert memory.search("op-1", "book follow-up meetings", k=1) == [facts[1]]  # off by default: demo unchanged
+
+
+@pytest.mark.parametrize("fact, key", [
+    ("Acme Widgets: 3 failed late.", "acme widgets"),
+    ("Rule: payroll: charged monthly.", "rule: payroll"),
+    ("Rule: payroll is charged monthly.", None),  # no topic: not one shared 'rule' slot
+    ("Operator prefers email. Note: cc Bob.", None),
+])
+def test_subject_keys(fact, key):
+    from harness.memory import subject
+    assert subject(fact) == key
 
 
 def test_prompts_load_from_files_in_prompts_dir(release, tmp_path):

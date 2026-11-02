@@ -8,7 +8,6 @@ Extract lasting lessons about THIS company that will help at later checkpoints:
 Rules:
 - One fact per subject. Start every fact with its subject and a colon ("Acme Widgets:", "Emp_3:", "Rule: <topic>:"). A fact replaces the existing fact with the same subject, so always return the full updated fact, never a partial update.
 - Client facts are track records with counts, not task lists: "Acme Widgets: 3 finished early, 2 failed late." Carry the counts forward from the existing fact and add the new events.
-- When a client's tasks failed while the same team (or a similar one) finished similar or larger tasks for other clients on time, the failures are the client's. End that client's fact with "Avoid taking more work from this client."
 - Rules: give each rule its own short topic ("Rule: payroll:", "Rule: deadlines:"), never a generic one such as "Rule: game mechanic:". Store a rule only when an event in the log proves it, not from the agent's guesses or plans. If a later event contradicts a rule, return the rule corrected.
 - Never store current state: active, unfinished or in-progress tasks, current funds, runway, payroll, who is busy, or anything that starts with "Currently". The agent sees the current state at every checkpoint.
 - Never store task ids, dollar figures, or the agent's own rate estimates or capacity calculations.
