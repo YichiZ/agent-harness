@@ -40,6 +40,7 @@ class Release:
     episodic_recent_k: int
     consolidate_every_n_chats: int
     prompts_dir: str = "prompts"  # relative to the repo root
+    subject_keys: bool = False  # facts starting "Subject:" replace by subject and are always recalled
 
     @classmethod
     def load(cls, path: Path | None = None) -> "Release":

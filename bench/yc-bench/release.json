@@ -1,5 +1,5 @@
 {
-  "prompt_version": "v4",
+  "prompt_version": "v5",
   "agent_model": "claude-sonnet-5-5",
   "agent_effort": "medium",
   "summarizer_model": "claude-haiku-5-5",
@@ -10,5 +10,6 @@
   "episodic_top_k": 5,
   "episodic_recent_k": 3,
   "consolidate_every_n_chats": 1,
-  "prompts_dir": "bench/yc-bench/prompts"
+  "prompts_dir": "bench/yc-bench/prompts",
+  "subject_keys": true
 }
