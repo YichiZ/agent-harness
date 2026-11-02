@@ -1,0 +1,702 @@
+{
+  "checkpoint": 67,
+  "prompt": [
+    "## Checkpoint 67",
+    "- sim time: 2025-07-02T10:52:45.881517",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $1,081,129.08",
+    "- monthly payroll: $51,525.03",
+    "- runway: ~21.0 months",
+    "- employees: 8",
+    "- active tasks: 2, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"cf762006-dde3-4b15-a013-16d251e35163\", \"task_title\": \"Task-193000\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 10520.82, \"listed_reward_usd\": 10520.82, \"trust_delta\": 0.08363359006714965, \"deadline_margin\": \"ahead by 192h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 239.66, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-193000 (Cortex Intelligence, inference, 601 units, about $10.5k). It's due 2025-07-10, and Emp_4, Emp_2, Emp_8 and Emp_5 are on it.",
+    "- **Fit:** I didn't recheck their rate this time. Their inference rate is about 40 units/hour combined, so it needs about 15 hours against a 9-day window.",
+    "- **Other team:** Emp_6, Emp_7, Emp_1 and Emp_3 are still on Task-54 (11% done, due 2025-07-09) and Task-106. Task-106 is Vanguard ML, 66% done and past its deadline, so it will likely fail. It splits that team's rate with Task-54.",
+    "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs."
+  ],
+  "tool_calls": [
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench market browse --domain inference --limit 10"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "total": 10,
+          "offset": 0,
+          "limit": 10,
+          "tasks": [
+            {
+              "task_id": "Task-89",
+              "client_name": "Equinox Labs",
+              "required_prestige": 2,
+              "required_trust": 0,
+              "reward_funds_cents": 1458575,
+              "reward_prestige_delta": 0.072,
+              "skill_boost_pct": 0.1052,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1448.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-59",
+              "client_name": "Equinox Labs",
+              "required_prestige": 2,
+              "required_trust": 0,
+              "reward_funds_cents": 1452300,
+              "reward_prestige_delta": 0.122,
+              "skill_boost_pct": 0.0918,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1384.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-41",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1110009,
+              "reward_prestige_delta": 0.13,
+              "skill_boost_pct": 0.1899,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 840.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-101",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1089783,
+              "reward_prestige_delta": 0.215,
+              "skill_boost_pct": 0.0824,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 610.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-11",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1085878,
+              "reward_prestige_delta": 0.111,
+              "skill_boost_pct": 0.0837,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1120.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-29",
+              "client_name": "Equinox Labs",
+              "required_prestige": 2,
+              "required_trust": 0,
+              "reward_funds_cents": 1078606,
+              "reward_prestige_delta": 0.172,
+              "skill_boost_pct": 0.13,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 855.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-107",
+              "client_name": "Equinox Labs",
+              "required_prestige": 2,
+              "required_trust": 0,
+              "reward_funds_cents": 1068643,
+              "reward_prestige_delta": 0.093,
+              "skill_boost_pct": 0.1645,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 847.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-143",
+              "client_name": "Equinox Labs",
+              "required_prestige": 1,
+              "required_trust": 0,
+              "reward_funds_cents": 1046182,
+              "reward_prestige_delta": 0.075,
+              "skill_boost_pct": 0.0315,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1160.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-13000",
+              "client_name": "Cortex Intelligence",
+              "required_prestige": 2,
+              "required_trust": 3,
+              "reward_funds_cents": 1043963,
+              "reward_prestige_delta": 0.125,
+              "skill_boost_pct": 0.035,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 785.0
+                }
+              ]
+            },
+            {
+              "task_id": "Task-186",
+              "client_name": "Stratos Cloud",
+              "required_prestige": 2,
+              "required_trust": 0,
+              "reward_funds_cents": 1036750,
+              "reward_prestige_delta": 0.077,
+              "skill_boost_pct": 0.2135,
+              "requirements": [
+                {
+                  "domain": "inference",
+                  "required_qty": 1276.0
+                }
+              ]
+            }
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task list --status active"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "count": 2,
+          "tasks": [
+            {
+              "task_id": "Task-54",
+              "title": "Task-54",
+              "status": "active",
+              "client_name": "Stratos Cloud",
+              "progress_pct": 80.0,
+              "deadline": "2025-07-09T18:00:00",
+              "at_risk": false
+            },
+            {
+              "task_id": "Task-106",
+              "title": "Task-106",
+              "status": "active",
+              "client_name": "Vanguard ML",
+              "progress_pct": 69.92,
+              "deadline": "2025-06-27T13:26:27.241501",
+              "at_risk": true
+            }
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task accept --task-id Task-13000"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-13000",
+          "status": "planned",
+          "accepted_at": "2025-07-02T10:52:45.881517",
+          "deadline": "2025-07-11T10:52:45.881517",
+          "replacement_task_id": "Task-13001"
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task assign --task-id Task-13000 --employees Emp_4,Emp_2,Emp_8,Emp_5"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-13000",
+          "status": "planned",
+          "newly_assigned": [
+            "Emp_4",
+            "Emp_2",
+            "Emp_8",
+            "Emp_5"
+          ],
+          "total_assigned": [
+            "Emp_8",
+            "Emp_5",
+            "Emp_2",
+            "Emp_4"
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    },
+    {
+      "name": "run_command",
+      "input": {
+        "command": "yc-bench task dispatch --task-id Task-13000"
+      },
+      "result": {
+        "ok": true,
+        "exit_code": 0,
+        "stdout": {
+          "task_id": "Task-13000",
+          "status": "active",
+          "assignment_count": 4,
+          "assigned_employees": [
+            "Emp_8",
+            "Emp_5",
+            "Emp_2",
+            "Emp_4"
+          ]
+        },
+        "stderr": "",
+        "truncated": false
+      },
+      "is_error": false
+    }
+  ],
+  "sim_time_before": "2025-07-02T10:52:45.881517",
+  "funds_before": 108112908,
+  "reply": [
+    "I accepted and dispatched Task-13000 (Cortex Intelligence, inference, 785 units, about $10.4k). Emp_4, Emp_2, Emp_8 and Emp_5 are on it, and it's due 2025-07-11.",
+    "- **Fit:** I didn't recheck their rate. At about 40 units/hour combined it needs roughly 20 hours against a 9-day window, so it should fit.",
+    "- **Task-54:** Stratos Cloud Task-54 is 80% done and not at risk. It's still running with Emp_6, Emp_7, Emp_1 and Emp_3.",
+    "- **Task-106:** Vanguard ML Task-106 is 70% done and past its deadline, so it will likely fail.",
+    "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs."
+  ],
+  "stop": "done",
+  "steps": 5,
+  "system": [
+    "You are the CEO of a startup in a business simulation. Maximize funds and prestige while avoiding bankruptcy.",
+    "",
+    "All actions use `yc-bench` CLI commands via `run_command`. All return JSON.",
+    "",
+    "## Core Workflow (repeat every checkpoint)",
+    "",
+    "**You must always have active tasks running. Every checkpoint, follow this loop:**",
+    "",
+    "1. `yc-bench market browse` — pick a task",
+    "2. `yc-bench task accept --task-id Task-42` — accept it",
+    "3. `yc-bench task assign --task-id Task-42 --employees Emp_1,Emp_4,Emp_7` — assign employees (check `employee list` for skill rates)",
+    "4. `yc-bench task dispatch --task-id Task-42` — start work",
+    "",
+    "Run multiple tasks concurrently when possible. Accept → assign → dispatch a second task before you finish the checkpoint.",
+    "",
+    "When done, stop calling tools and reply with a note of at most 5 lines: what you did and what you learned. The runner then advances time to the next event. Do not try to advance time yourself.",
+    "",
+    "## Commands",
+    "",
+    "### Observe",
+    "- `yc-bench company status` — funds, prestige, payroll",
+    "- `yc-bench employee list` — employees with skill rates per domain",
+    "- `yc-bench market browse [--domain X] [--reward-min-cents N] [--limit N]` — available tasks",
+    "- `yc-bench task list [--status X]` — your tasks",
+    "- `yc-bench task inspect --task-id Task-42` — task details",
+    "- `yc-bench client list` — clients with trust levels",
+    "- `yc-bench client history` — per-client success/failure rates",
+    "- `yc-bench finance ledger` — financial history",
+    "",
+    "### Act",
+    "- `yc-bench task accept --task-id Task-42` — accept from market",
+    "- `yc-bench task assign --task-id Task-42 --employees Emp_1,Emp_4,Emp_7` — assign employees (comma-separated)",
+    "- `yc-bench task dispatch --task-id Task-42` — start work (must assign first)",
+    "- `yc-bench task cancel --task-id Task-42 --reason \"text\"` — cancel (prestige penalty)",
+    "",
+    "## Key Mechanics",
+    "",
+    "- **Salary bumps**: completed tasks raise salary for every assigned employee. More employees assigned = higher payroll growth.",
+    "- **Throughput split**: employees on multiple active tasks split their rate (rate/N). Two tasks run at 50% each.",
+    "- **Deadlines**: success before deadline = reward + prestige. Failure = prestige penalty, no reward.",
+    "- **Trust**: completing tasks for a client builds trust → less work per task, access to gated tasks. Working for one client erodes trust with others.",
+    "- **Not all clients are reliable.** Check `client history` for failure patterns.",
+    "- **Payroll**: deducted monthly. Funds < 0 = bankruptcy.",
+    "- Prestige grows per domain. Higher prestige unlocks better-paying tasks.",
+    "",
+    "Sections below come from your memory of earlier checkpoints; treat them as your own notes.",
+    "",
+    "# What you know about this operator",
+    "- Vanguard ML: Task-88 failure is suspect as client blame, since the same four employees (Emp_4, Emp_2, Emp_8, Emp_5) later finished Cortex Intelligence Task-86 (732 units of inference) 238 hours ahead of deadline.",
+    "- Rule: Game mechanic: Each successfully completed task pays its listed reward in full; the trust gain on success varies by task and is not a fixed value (Stratos Cloud Task-24 raised trust by 1.6, Helix Systems Task-1 by about 0.91, Helix Systems Task-79 by about 0.59, Helix Systems Task-43 by about 0.42).",
+    "- Cortex Intelligence: reliable; Task-20, Task-38 and Task-187001 all finished ahead of deadline with 4 employees, and Task-187001 was paid in full.",
+    "- Throughput: 4 employees (Emp_6, Emp_7, Emp_1, Emp_3) finished 1258 units of data_environment work 165 hours before the deadline.",
+    "- Stratos Cloud: reliable; Task-144, Task-180, Task-84 and Task-192 all finished ahead of deadline with 4 employees, and Task-180, Task-84 and Task-192 were paid in full.",
+    "- Equinox Labs: unreliable overall; Task-155, Task-179 and Task-125 all failed late, but each failure is suspect as client blame because the same teams later finished similar or larger Cortex Intelligence tasks on time.",
+    "- Prism Analytics: Task-81 (1,055 units of training) and Task-57 both finished ahead of deadline with 4 employees (79 hours and 25 hours early) and were paid in full, so the client is reliable.",
+    "- Cortex Intelligence: Task-187002 finished ahead of deadline by 169 hours with 4 employees and was paid in full, reinforcing reliability.",
+    "- Helix Systems: reliable; Task-73 (1,427 units of data_environment) finished ahead of deadline by 102 hours with 4 employees and was paid in full.",
+    "- Game mechanic: Each successfully completed task pays its listed reward in full; the trust gain on success varies by task and is not a fixed value.",
+    "",
+    "# Relevant past conversations",
+    "- [chat cp-025] user: ## Checkpoint 25",
+    "- sim time: 2025-03-12T14:39:15.712927",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $547,733.02",
+    "- monthly payroll: $42,805.03",
+    "- runway: ~12.8 months",
+    "- employees: 8",
+    "- active tasks: 1, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"be104aac-e9c7-4143-8f6f-be70f2dce696\", \"task_title\": \"Task-74\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 17350.27, \"listed_reward_usd\": 17350.27, \"trust_delta\": 0.35864066562507935, \"deadline_margin\": \"ahead by 190h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 196.46, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-74 (Cortex Intelligence, inference, 451 units, about $17.4k). Emp_4, Emp_2, Emp_8 and Emp_5 are on it, and it's due 2025-03-20.",
+    "- I didn't check the team's work rate against the 451 units. The task is small for them, so it should fit.",
+    "- Task-155 (Equinox Labs) is still running with Emp_6, Emp_7, Emp_1 and Emp_3. Each team has one task, so neither splits its rate.",
+    "- Task-68 finished 168 hours early.",
+    "- I'm still avoiding Vanguard ML because of its two failed tasks.",
+    "- [chat cp-037] user: ## Checkpoint 37",
+    "- sim time: 2025-04-10T10:12:19.730736",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $696,532.82",
+    "- monthly payroll: $45,085.03",
+    "- runway: ~15.4 months",
+    "- employees: 8",
+    "- active tasks: 1, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"7d609091-9930-4566-9c24-e97fd4749d30\", \"task_title\": \"Task-50\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 20228.01, \"listed_reward_usd\": 20228.01, \"trust_delta\": 0.1240254470095552, \"deadline_margin\": \"ahead by 149h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 241.56, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-110 (Cortex Intelligence, inference, 1,605 units, about $17.9k). It's due 2025-04-18.",
+    "- Emp_4, Emp_2, Emp_8 and Emp_5 are on it. Their combined inference rate is about 37 units per hour, so it should fit.",
+    "- Task-50 is still running with Emp_6, Emp_7, Emp_1 and Emp_3. Each team has one task, so neither splits its rate.",
+    "- I'm still avoiding Vanguard ML and being careful with Equinox Labs.",
+    "- [chat cp-038] user: ## Checkpoint 38",
+    "- sim time: 2025-04-11T14:31:54.938549",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $714,390.98",
+    "- monthly payroll: $45,245.03",
+    "- runway: ~15.8 months",
+    "- employees: 8",
+    "- active tasks: 1, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"ca8b436a-b4b0-4c75-b041-bf828f1fd52f\", \"task_title\": \"Task-110\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 17858.16, \"listed_reward_usd\": 17858.16, \"trust_delta\": 0.10163296080150364, \"deadline_margin\": \"ahead by 167h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 210.86, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-62 (Cortex Intelligence, inference, 938 units, about $15.1k). It's due 2025-04-21.",
+    "- Emp_6, Emp_7, Emp_1 and Emp_3 are on it. I didn't check their rate against the 938 units. Similar inference tasks for this team finished well ahead of deadline.",
+    "- Task-110 is still running with Emp_4, Emp_2, Emp_8 and Emp_5. It's 47.7% done and not at risk. Each team has one task, so neither splits its rate.",
+    "- I'm still avoiding Vanguard ML and being careful with Equinox Labs.",
+    "- [chat cp-048] user: ## Checkpoint 48",
+    "- sim time: 2025-04-30T15:03:00.586658",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $955,427.12",
+    "- monthly payroll: $47,765.03",
+    "- runway: ~20.0 months",
+    "- employees: 8",
+    "- active tasks: 1, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"228c0a55-5e16-4062-97a2-fe580c4d1631\", \"task_title\": \"Task-170\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 13577.26, \"listed_reward_usd\": 13577.26, \"trust_delta\": 0.04596467992187048, \"deadline_margin\": \"ahead by 170h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 255.56, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-134 (Cortex Intelligence, inference, 1,694 units, about $33.2k). Emp_4, Emp_2, Emp_8 and Emp_5 are on it, and it's due 2025-05-09.",
+    "- I didn't check this team's rate against the 1,694 units. Similar tasks finished well ahead of deadline, so it should fit.",
+    "- Task-170 is still running with Emp_6, Emp_7, Emp_1 and Emp_3, so neither team splits its rate.",
+    "- I'm still avoiding Vanguard ML and being careful with Equinox Labs.",
+    "- [chat cp-064] user: ## Checkpoint 64",
+    "- sim time: 2025-06-27T12:40:45.881517",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $1,111,151.59",
+    "- monthly payroll: $51,205.03",
+    "- runway: ~21.7 months",
+    "- employees: 8",
+    "- active tasks: 1, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"b29b6bba-9f88-46ef-9e6a-306f96c33014\", \"task_title\": \"Task-86\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 10695.29, \"listed_reward_usd\": 10695.29, \"trust_delta\": 0.11653052512985607, \"deadline_margin\": \"ahead by 238h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 236.46, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I dispatched Task-86 (Cortex Intelligence, inference, 732 units, about $10.7k) with Emp_4, Emp_2, Emp_8 and Emp_5. It's due 2025-07-07. I didn't check their inference rate against the 732 units.",
+    "- Task-88 (Vanguard ML, research, 760 units) failed late by 24h. It cost $7.0k and trust fell by 0.18, even though I'd estimated about 21 hours of work.",
+    "- Vanguard ML has now failed three of its tasks that I took on (Task-46, Task-112, Task-88). I'm cutting back on it and preferring Cortex.",
+    "- Task-106 (Vanguard ML) is still running with Emp_6, Emp_7, Emp_1 and Emp_3. It's 44% done, due 2025-06-27, and not flagged at risk.",
+    "- I should check each team's actual rate against the task's units before accepting. My rate estimates have been unreliable.",
+    "- [chat cp-065] user: ## Checkpoint 65",
+    "- sim time: 2025-07-01T09:00:00",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $1,059,946.56",
+    "- monthly payroll: $51,205.03",
+    "- runway: ~20.7 months",
+    "- employees: 8",
+    "- active tasks: 2, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- monthly_payroll: {\"funds_after_usd\": 1059946.56}",
+    "",
+    "### Your note from the last checkpoint",
+    "I dispatched Task-187002 (Cortex Intelligence, inference, 1,160 units, about $10.7k) with Emp_4, Emp_2, Emp_8 and Emp_5. It's due 2025-07-08.",
+    "- **Fit:** I checked the rate this time. The team's inference rate is 10/hour each, about 40/hour combined, so the task needs about 29 hours against an 11-day window.",
+    "- **Task-106:** Vanguard ML Task-106 is still running with Emp_6, Emp_7, Emp_1 and Emp_3. It's 52% done and its deadline is 2025-06-27 13:26, under an hour away. It isn't flagged at risk, but that team's research rate is only about 5/hour per person, so a late finish looks likely.",
+    "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs and preferring Cortex Intelligence.",
+    "- [chat cp-066] user: ## Checkpoint 66",
+    "- sim time: 2025-07-01T11:21:15.881517",
+    "- horizon end: 2026-01-01T09:00:00",
+    "- funds: $1,070,608.26",
+    "- monthly payroll: $51,365.03",
+    "- runway: ~20.8 months",
+    "- employees: 8",
+    "- active tasks: 2, planned tasks: 0",
+    "",
+    "### Events since the last checkpoint",
+    "- task_completed: {\"task_id\": \"a67bdfb6-c033-41f9-8bef-027bc9c1876c\", \"task_title\": \"Task-187002\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 10661.7, \"listed_reward_usd\": 10661.7, \"trust_delta\": 0.10067686915116081, \"deadline_margin\": \"ahead by 169h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 238.06, \"bankrupt\": false}",
+    "",
+    "### Your note from the last checkpoint",
+    "I accepted and dispatched Task-54 (Stratos Cloud, data_environment, 652 units, about $10.5k). It's due 2025-07-09, and Emp_6, Emp_7, Emp_1 and Emp_3 are on it.",
+    "- **Fit:** I didn't check the team's rate this time. Their data_environment rate was about 40 units/hour combined, so it needs about 16 hours if they work on it alone.",
+    "- **Task-106:** Vanguard ML Task-106 is 66% done and past its deadline, and it's flagged at risk. It shares this team, so both tasks now run at half rate. Task-54 should still fit, but Task-106 will likely fail.",
+    "- **Task-187002:** Cortex Intelligence Task-187002 is at 100% progress and due 2025-07-08, so it should finish on time.",
+    "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs."
+  ],
+  "facts": [
+    "Vanguard ML: Task-88 failure is suspect as client blame, since the same four employees (Emp_4, Emp_2, Emp_8, Emp_5) later finished Cortex Intelligence Task-86 (732 units of inference) 238 hours ahead of deadline.",
+    "Rule: Game mechanic: Each successfully completed task pays its listed reward in full; the trust gain on success varies by task and is not a fixed value (Stratos Cloud Task-24 raised trust by 1.6, Helix Systems Task-1 by about 0.91, Helix Systems Task-79 by about 0.59, Helix Systems Task-43 by about 0.42).",
+    "Cortex Intelligence: reliable; Task-20, Task-38 and Task-187001 all finished ahead of deadline with 4 employees, and Task-187001 was paid in full.",
+    "Throughput: 4 employees (Emp_6, Emp_7, Emp_1, Emp_3) finished 1258 units of data_environment work 165 hours before the deadline.",
+    "Stratos Cloud: reliable; Task-144, Task-180, Task-84 and Task-192 all finished ahead of deadline with 4 employees, and Task-180, Task-84 and Task-192 were paid in full.",
+    "Equinox Labs: unreliable overall; Task-155, Task-179 and Task-125 all failed late, but each failure is suspect as client blame because the same teams later finished similar or larger Cortex Intelligence tasks on time.",
+    "Prism Analytics: Task-81 (1,055 units of training) and Task-57 both finished ahead of deadline with 4 employees (79 hours and 25 hours early) and were paid in full, so the client is reliable.",
+    "Cortex Intelligence: Task-187002 finished ahead of deadline by 169 hours with 4 employees and was paid in full, reinforcing reliability.",
+    "Helix Systems: reliable; Task-73 (1,427 units of data_environment) finished ahead of deadline by 102 hours with 4 employees and was paid in full.",
+    "Game mechanic: Each successfully completed task pays its listed reward in full; the trust gain on success varies by task and is not a fixed value."
+  ],
+  "recalled_episodes": [
+    [
+      "[chat cp-025] user: ## Checkpoint 25",
+      "- sim time: 2025-03-12T14:39:15.712927",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $547,733.02",
+      "- monthly payroll: $42,805.03",
+      "- runway: ~12.8 months",
+      "- employees: 8",
+      "- active tasks: 1, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"be104aac-e9c7-4143-8f6f-be70f2dce696\", \"task_title\": \"Task-74\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 17350.27, \"listed_reward_usd\": 17350.27, \"trust_delta\": 0.35864066562507935, \"deadline_margin\": \"ahead by 190h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 196.46, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I accepted and dispatched Task-74 (Cortex Intelligence, inference, 451 units, about $17.4k). Emp_4, Emp_2, Emp_8 and Emp_5 are on it, and it's due 2025-03-20.",
+      "- I didn't check the team's work rate against the 451 units. The task is small for them, so it should fit.",
+      "- Task-155 (Equinox Labs) is still running with Emp_6, Emp_7, Emp_1 and Emp_3. Each team has one task, so neither splits its rate.",
+      "- Task-68 finished 168 hours early.",
+      "- I'm still avoiding Vanguard ML because of its two failed tasks."
+    ],
+    [
+      "[chat cp-037] user: ## Checkpoint 37",
+      "- sim time: 2025-04-10T10:12:19.730736",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $696,532.82",
+      "- monthly payroll: $45,085.03",
+      "- runway: ~15.4 months",
+      "- employees: 8",
+      "- active tasks: 1, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"7d609091-9930-4566-9c24-e97fd4749d30\", \"task_title\": \"Task-50\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 20228.01, \"listed_reward_usd\": 20228.01, \"trust_delta\": 0.1240254470095552, \"deadline_margin\": \"ahead by 149h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 241.56, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I accepted and dispatched Task-110 (Cortex Intelligence, inference, 1,605 units, about $17.9k). It's due 2025-04-18.",
+      "- Emp_4, Emp_2, Emp_8 and Emp_5 are on it. Their combined inference rate is about 37 units per hour, so it should fit.",
+      "- Task-50 is still running with Emp_6, Emp_7, Emp_1 and Emp_3. Each team has one task, so neither splits its rate.",
+      "- I'm still avoiding Vanguard ML and being careful with Equinox Labs."
+    ],
+    [
+      "[chat cp-038] user: ## Checkpoint 38",
+      "- sim time: 2025-04-11T14:31:54.938549",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $714,390.98",
+      "- monthly payroll: $45,245.03",
+      "- runway: ~15.8 months",
+      "- employees: 8",
+      "- active tasks: 1, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"ca8b436a-b4b0-4c75-b041-bf828f1fd52f\", \"task_title\": \"Task-110\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 17858.16, \"listed_reward_usd\": 17858.16, \"trust_delta\": 0.10163296080150364, \"deadline_margin\": \"ahead by 167h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 210.86, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I accepted and dispatched Task-62 (Cortex Intelligence, inference, 938 units, about $15.1k). It's due 2025-04-21.",
+      "- Emp_6, Emp_7, Emp_1 and Emp_3 are on it. I didn't check their rate against the 938 units. Similar inference tasks for this team finished well ahead of deadline.",
+      "- Task-110 is still running with Emp_4, Emp_2, Emp_8 and Emp_5. It's 47.7% done and not at risk. Each team has one task, so neither splits its rate.",
+      "- I'm still avoiding Vanguard ML and being careful with Equinox Labs."
+    ],
+    [
+      "[chat cp-048] user: ## Checkpoint 48",
+      "- sim time: 2025-04-30T15:03:00.586658",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $955,427.12",
+      "- monthly payroll: $47,765.03",
+      "- runway: ~20.0 months",
+      "- employees: 8",
+      "- active tasks: 1, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"228c0a55-5e16-4062-97a2-fe580c4d1631\", \"task_title\": \"Task-170\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 13577.26, \"listed_reward_usd\": 13577.26, \"trust_delta\": 0.04596467992187048, \"deadline_margin\": \"ahead by 170h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 255.56, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I accepted and dispatched Task-134 (Cortex Intelligence, inference, 1,694 units, about $33.2k). Emp_4, Emp_2, Emp_8 and Emp_5 are on it, and it's due 2025-05-09.",
+      "- I didn't check this team's rate against the 1,694 units. Similar tasks finished well ahead of deadline, so it should fit.",
+      "- Task-170 is still running with Emp_6, Emp_7, Emp_1 and Emp_3, so neither team splits its rate.",
+      "- I'm still avoiding Vanguard ML and being careful with Equinox Labs."
+    ],
+    [
+      "[chat cp-064] user: ## Checkpoint 64",
+      "- sim time: 2025-06-27T12:40:45.881517",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $1,111,151.59",
+      "- monthly payroll: $51,205.03",
+      "- runway: ~21.7 months",
+      "- employees: 8",
+      "- active tasks: 1, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"b29b6bba-9f88-46ef-9e6a-306f96c33014\", \"task_title\": \"Task-86\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 10695.29, \"listed_reward_usd\": 10695.29, \"trust_delta\": 0.11653052512985607, \"deadline_margin\": \"ahead by 238h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 236.46, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I dispatched Task-86 (Cortex Intelligence, inference, 732 units, about $10.7k) with Emp_4, Emp_2, Emp_8 and Emp_5. It's due 2025-07-07. I didn't check their inference rate against the 732 units.",
+      "- Task-88 (Vanguard ML, research, 760 units) failed late by 24h. It cost $7.0k and trust fell by 0.18, even though I'd estimated about 21 hours of work.",
+      "- Vanguard ML has now failed three of its tasks that I took on (Task-46, Task-112, Task-88). I'm cutting back on it and preferring Cortex.",
+      "- Task-106 (Vanguard ML) is still running with Emp_6, Emp_7, Emp_1 and Emp_3. It's 44% done, due 2025-06-27, and not flagged at risk.",
+      "- I should check each team's actual rate against the task's units before accepting. My rate estimates have been unreliable."
+    ],
+    [
+      "[chat cp-065] user: ## Checkpoint 65",
+      "- sim time: 2025-07-01T09:00:00",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $1,059,946.56",
+      "- monthly payroll: $51,205.03",
+      "- runway: ~20.7 months",
+      "- employees: 8",
+      "- active tasks: 2, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- monthly_payroll: {\"funds_after_usd\": 1059946.56}",
+      "",
+      "### Your note from the last checkpoint",
+      "I dispatched Task-187002 (Cortex Intelligence, inference, 1,160 units, about $10.7k) with Emp_4, Emp_2, Emp_8 and Emp_5. It's due 2025-07-08.",
+      "- **Fit:** I checked the rate this time. The team's inference rate is 10/hour each, about 40/hour combined, so the task needs about 29 hours against an 11-day window.",
+      "- **Task-106:** Vanguard ML Task-106 is still running with Emp_6, Emp_7, Emp_1 and Emp_3. It's 52% done and its deadline is 2025-06-27 13:26, under an hour away. It isn't flagged at risk, but that team's research rate is only about 5/hour per person, so a late finish looks likely.",
+      "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs and preferring Cortex Intelligence."
+    ],
+    [
+      "[chat cp-066] user: ## Checkpoint 66",
+      "- sim time: 2025-07-01T11:21:15.881517",
+      "- horizon end: 2026-01-01T09:00:00",
+      "- funds: $1,070,608.26",
+      "- monthly payroll: $51,365.03",
+      "- runway: ~20.8 months",
+      "- employees: 8",
+      "- active tasks: 2, planned tasks: 0",
+      "",
+      "### Events since the last checkpoint",
+      "- task_completed: {\"task_id\": \"a67bdfb6-c033-41f9-8bef-027bc9c1876c\", \"task_title\": \"Task-187002\", \"client_name\": \"Cortex Intelligence\", \"success\": true, \"funds_delta_usd\": 10661.7, \"listed_reward_usd\": 10661.7, \"trust_delta\": 0.10067686915116081, \"deadline_margin\": \"ahead by 169h\", \"employees_assigned\": 4, \"salary_bump_total_usd\": 238.06, \"bankrupt\": false}",
+      "",
+      "### Your note from the last checkpoint",
+      "I accepted and dispatched Task-54 (Stratos Cloud, data_environment, 652 units, about $10.5k). It's due 2025-07-09, and Emp_6, Emp_7, Emp_1 and Emp_3 are on it.",
+      "- **Fit:** I didn't check the team's rate this time. Their data_environment rate was about 40 units/hour combined, so it needs about 16 hours if they work on it alone.",
+      "- **Task-106:** Vanguard ML Task-106 is 66% done and past its deadline, and it's flagged at risk. It shares this team, so both tasks now run at half rate. Task-54 should still fit, but Task-106 will likely fail.",
+      "- **Task-187002:** Cortex Intelligence Task-187002 is at 100% progress and due 2025-07-08, so it should finish on time.",
+      "- **Clients:** I'm still avoiding Vanguard ML and Equinox Labs."
+    ]
+  ],
+  "resume": {
+    "exit_code": 0,
+    "payload": {
+      "ok": true,
+      "old_sim_time": "2025-07-02T15:06:00.005517",
+      "new_sim_time": "2025-07-02T15:06:00.005517",
+      "checkpoint_event_type": "task_completed",
+      "events_processed": 1,
+      "payrolls_applied": 0,
+      "balance_delta": 1054076,
+      "wake_events": [
+        {
+          "type": "task_completed",
+          "task_id": "622c2fb2-931d-4ac7-b1e9-8cb5afcb202b",
+          "task_title": "Task-54",
+          "client_name": "Stratos Cloud",
+          "success": true,
+          "funds_delta": 1054076,
+          "listed_reward": 1054076,
+          "trust_delta": 0.27056785848788456,
+          "deadline_margin": "ahead by 171h",
+          "employees_assigned": 4,
+          "salary_bump_total_cents": 27756,
+          "bankrupt": false
+        }
+      ],
+      "bankrupt": false,
+      "horizon_reached": false,
+      "terminal_reason": null
+    },
+    "stderr": ""
+  },
+  "wake_events": [
+    {
+      "type": "task_completed",
+      "task_id": "622c2fb2-931d-4ac7-b1e9-8cb5afcb202b",
+      "task_title": "Task-54",
+      "client_name": "Stratos Cloud",
+      "success": true,
+      "funds_delta": 1054076,
+      "listed_reward": 1054076,
+      "trust_delta": 0.27056785848788456,
+      "deadline_margin": "ahead by 171h",
+      "employees_assigned": 4,
+      "salary_bump_total_cents": 27756,
+      "bankrupt": false
+    }
+  ],
+  "resume_error": null,
+  "model_calls": 6,
+  "cost_usd": 0.09702150000000032,
+  "total_cost_usd": 6.058204499999999,
+  "sim_time_after": "2025-07-02T15:06:00.005517",
+  "funds_after": 109166984
+}
