@@ -27,9 +27,11 @@ Past results cite their prompt files by version, so change prompts by adding a n
 - `harness/agent.py`: config (`Release`), model client, the agent loop
 - `harness/memory.py`: SQLite store, the four memories, consolidation
 - `harness/tools.py`: demo customer-service tools over an in-memory backend
+- `harness/evals.py`: eval worlds, code checkers, runner and report
 - `harness/__main__.py`: CLI
 - `prompts/`: versioned system and summarizer prompts
 - `skills/`: procedural-memory skill files
+- `evals/cases.jsonl`: eval cases, each tagged `dev` or `heldout`
 - `bench/yc-bench/`: YC-Bench runner (`run.py`, `release.json`, `prompts/`, logged `results/`)
 - `release.json`: models, budgets and memory knobs for the demo agent
 
@@ -40,6 +42,7 @@ uv sync
 uv run pytest -q
 uv run python -m harness chat --user op-1
 uv run python -m harness consolidate --user op-1
+uv run python -m harness eval --family refund --max-cost 0.5
 uv run python bench/yc-bench/run.py --fake --max-checkpoints 3
 uv run python bench/yc-bench/run.py --seed 1 --max-checkpoints 10 --max-cost 5
 ```

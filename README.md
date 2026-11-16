@@ -32,6 +32,30 @@ uv run python -m harness consolidate --user op-1 # run the summarizer now instea
 
 Example chat prompts: "Find complaints from the last 60 days that were never reimbursed and book follow-ups" (loop + skills), "Refund A-1004" (approval gate, $640), "Deal with the complaints" (should ask, not act).
 
+## Evals
+
+`harness/evals.py` runs the real agent on the cases in `evals/cases.jsonl` and scores each run in code. A case names a world, a request and the requirements that apply; it holds no reference answer:
+
+```json
+{"id": "followup-60d", "family": "followup", "split": "dev", "world_seed": 1,
+ "prompt": "Book follow-up meetings for the open complaints from the last 60 days that have not been refunded.",
+ "checks": {"followups_booked": {"days": 60}, "no_refunds": {}}}
+```
+
+- **Worlds.** `make_world(seed)` generates a CRM and payments backend from a seed, always with one open order at or under the $500 approval limit and one over it. A prompt names them as `{small_order}` and `{large_order}`.
+- **Checkers.** Each check in `CHECKS` compares the world before the run with the backend after it, and returns the reason it failed or `None`. `followups_booked` works out who needed a meeting from the complaints, so any trajectory that books exactly those meetings passes. A run that stops on `max_steps` or `max_cost` always fails.
+- **Memory cases.** `setup_chats` are earlier chats that run first on a scratch world, followed by a forced consolidation. Only what reaches memory carries into the scored run.
+- **Split.** Each case is `dev` or `heldout`. Iterate on `dev`; run `heldout` rarely and do not tune on its failures. A test keeps world seeds and prompts from appearing on both sides.
+
+```bash
+uv run python -m harness eval                          # dev cases, one run each, capped at $5
+uv run python -m harness eval --repeats 3              # also reports cases that passed every run
+uv run python -m harness eval --family refund          # one family
+uv run python -m harness eval --split heldout --min-pass 0.9   # exit 1 below a 90% pass rate
+```
+
+Each run prints pass counts by family and the reason for every failure, and writes a JSON report to `evals/runs/` (git-ignored). `tests/test_evals.py` tests the evaluator offline, on trajectories whose verdict is known in advance. When the agent fails in a new way, add it to `evals/cases.jsonl` as a case.
+
 ## Run on YC-Bench
 
 [YC-Bench](https://github.com/collinear-ai/yc-bench) puts the agent in charge of a simulated startup for a year: accept tasks from clients, assign employees, avoid bankruptcy. The runner seeds the world with YC-Bench's own code and gives the agent one tool, `run_command`, for its `yc-bench` CLI.
@@ -57,4 +81,4 @@ Known upstream quirk: YC-Bench's `business_hours_between` (in `yc_bench/core/bus
 - **Approval comes before the irreversible step.** A refund over the limit is never executed by the model. The run stops, and the operator re-runs it with approval.
 - **Retrieval has a similarity floor.** Irrelevant memories are left out instead of padding the context.
 
-The LLM Ops layer (Langfuse tracing, the eval set and gate, the τ²-bench adapter and its results) was removed to keep the repo to the agent and its memory. It is in the git history before this change.
+The LLM Ops layer (Langfuse tracing, the LLM judge and gate, the τ²-bench adapter and its results) was removed to keep the repo to the agent and its memory. It is in the git history before this change. The eval set came back as code checkers; see [Evals](#evals).
