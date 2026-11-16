@@ -6,3 +6,4 @@ harness.db
 .claude/worktrees/
 bench/yc-bench/runs/
 bench/yc-bench/results/**/*.db
+evals/runs/
