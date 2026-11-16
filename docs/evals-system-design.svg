@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 -6 1570 946" width="1570" height="946" font-family="Helvetica, Arial, sans-serif">
+<title>Eval suite system design</title>
+<defs><marker id="head-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#1e1e1e" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="head-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#868e96" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="-6" width="1570" height="946" fill="#ffffff"/>
+<rect x="30" y="215" width="1140" height="585" rx="14" fill="none" stroke="#868e96" stroke-width="1" stroke-dasharray="8 6"/>
+<text text-anchor="start" font-size="14" fill="#343a40"><tspan x="360" y="780.88">run_case(): one run.   run_evals() repeats it for every case × --repeats, until --max-cost.</tspan></text>
+<rect x="60" y="60" width="280" height="100" rx="10" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="200" y="95.81">1 · evals/cases.jsonl</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="200" y="118.63">26 cases, tagged dev or heldout</tspan><tspan x="200" y="136.13">world_seed · prompt · checks</tspan></text>
+<rect x="580" y="60" width="260" height="100" rx="10" fill="#d0ebff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="710" y="95.81">release.json · prompts/ · skills/</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="710" y="118.63">what is being evaluated:</tspan><tspan x="710" y="136.13">model, prompt version, budgets</tspan></text>
+<rect x="60" y="260" width="240" height="110" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="180" y="300.81">2 · make_world(seed)</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="180" y="323.63">seeded CRM + payments backend</tspan><tspan x="180" y="341.13">same seed, same world</tspan></text>
+<rect x="330" y="232" width="190" height="84" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2" stroke-dasharray="8 6"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="425" y="259.81">3 · setup_chats</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="425" y="282.63">memory cases only:</tspan><tspan x="425" y="300.13">earlier chats → memory</tspan></text>
+<rect x="580" y="260" width="260" height="110" rx="10" fill="#ffe8cc" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="710" y="300.81">4 · Agent.run(prompt)</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="710" y="323.63">the real agent loop</tspan><tspan x="710" y="341.13">calls tools until it stops</tspan></text>
+<rect x="920" y="260" width="220" height="110" rx="10" fill="#e5dbff" stroke="#6741d9" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="1030" y="300.81">Claude API</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="1030" y="323.63">the real model</tspan><tspan x="1030" y="341.13">(FakeLLM in offline tests)</tspan></text>
+<rect x="60" y="470" width="240" height="90" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="180" y="500.81">before</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="180" y="523.63">deep copy of the world,</tspan><tspan x="180" y="541.13">taken before the run</tspan></text>
+<rect x="460" y="470" width="260" height="90" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="590" y="509.56">Backend after the run</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="590" y="532.38">meetings · refunds · notes</tspan></text>
+<rect x="780" y="470" width="260" height="90" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="910" y="509.56">RunResult</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="910" y="532.38">tool_calls · stop · reply · cost</tspan></text>
+<rect x="60" y="650" width="1080" height="100" rx="10" fill="#d3f9d8" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="600" y="685.81">5 · Checkers: CHECKS[name](before, after, result, **args)</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="600" y="708.63">followups_booked · refund_exact · needs_approval · asked_user · meeting_minutes · …</tspan><tspan x="600" y="726.13">each returns None when the requirement holds, or the reason it failed</tspan></text>
+<rect x="60" y="830" width="280" height="90" rx="10" fill="#fff3bf" stroke="#f08c00" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="200" y="869.56">6 · Outcome</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="200" y="892.38">passed? · failure reasons · cost</tspan></text>
+<rect x="420" y="830" width="340" height="90" rx="10" fill="#fff3bf" stroke="#f08c00" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="590" y="860.81">7 · Report</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="590" y="883.63">pass counts by family</tspan><tspan x="590" y="901.13">terminal table + JSON in evals/runs/</tspan></text>
+<rect x="840" y="830" width="300" height="90" rx="10" fill="#fff3bf" stroke="#f08c00" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="990" y="860.81">8 · Gate</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="990" y="883.63">exit 1 below --min-pass,</tspan><tspan x="990" y="901.13">or if the cost cap cut the run short</tspan></text>
+<rect x="1230" y="400" width="280" height="170" rx="10" fill="#ffdeeb" stroke="#c2255c" stroke-width="2"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="1370" y="435.81">9 · You</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="1370" y="458.63">read the failures</tspan><tspan x="1370" y="476.13">change prompt, skills or harness</tspan><tspan x="1370" y="493.63">rerun dev</tspan><tspan x="1370" y="528.63">heldout: run rarely,</tspan><tspan x="1370" y="546.13">never tune on its failures</tspan></text>
+<rect x="1230" y="650" width="280" height="100" rx="10" fill="#f8f9fa" stroke="#868e96" stroke-width="2" stroke-dasharray="8 6"/>
+<text text-anchor="middle" font-size="18" fill="#1e1e1e"><tspan x="1370" y="685.81">tests/test_evals.py</tspan></text>
+<text text-anchor="middle" font-size="14" fill="#343a40"><tspan x="1370" y="708.63">scripted runs with known verdicts</tspan><tspan x="1370" y="726.13">check the checkers, offline</tspan></text>
+<polyline points="180,160 180,260" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="340,110 460,110 460,200 620,200 620,260" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="710,160 710,260" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="300,345 580,345" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="520,285 580,285" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="840,315 920,315" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-start="url(#head-ink)" marker-end="url(#head-ink)"/>
+<polyline points="180,370 180,470" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="640,370 640,470" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="810,370 810,470" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="180,560 180,650" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="590,560 590,650" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="910,560 910,650" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="200,750 200,830" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="340,875 420,875" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="760,875 840,875" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="1140,875 1550,875 1550,485 1510,485" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="1370,400 1370,110 840,110" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="1440,400 1440,30 200,30 200,60" fill="none" stroke="#1e1e1e" stroke-width="2" stroke-linejoin="round" marker-end="url(#head-ink)"/>
+<polyline points="1230,700 1140,700" fill="none" stroke="#868e96" stroke-width="2" stroke-linejoin="round" stroke-dasharray="8 6" marker-end="url(#head-grey)"/>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="190" y="189.96">world_seed</tspan></text>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="470" y="159.96">prompt</tspan></text>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="720" y="189.96">model · prompt · budgets</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="440" y="363.96">the world (a Backend)</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="880" y="303.96">messages</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="880" y="333.96">tool calls</tspan></text>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="190" y="423.96">copy</tspan></text>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="650" y="423.96">tools write</tspan></text>
+<text text-anchor="start" font-size="13" fill="#343a40"><tspan x="820" y="423.96">returns</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="1345" y="893.96">pass rates and failure reasons</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="1105" y="99.96">change what is being evaluated</tspan></text>
+<text text-anchor="middle" font-size="13" fill="#343a40"><tspan x="820" y="19.96">a new failure becomes a new case</tspan></text>
+</svg>
